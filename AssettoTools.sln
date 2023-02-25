@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.4.33205.214
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ACDBackend", "ACDBackend\ACDBackend.csproj", "{EA3778F9-544D-410A-BF9D-A0830ADC8559}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AssettoTools", "AssettoTools\AssettoTools.csproj", "{30705971-E7AA-4F4A-9C9A-9A6BA57EC8E4}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{EA3778F9-544D-410A-BF9D-A0830ADC8559}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EA3778F9-544D-410A-BF9D-A0830ADC8559}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EA3778F9-544D-410A-BF9D-A0830ADC8559}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EA3778F9-544D-410A-BF9D-A0830ADC8559}.Release|Any CPU.Build.0 = Release|Any CPU
+		{30705971-E7AA-4F4A-9C9A-9A6BA57EC8E4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{30705971-E7AA-4F4A-9C9A-9A6BA57EC8E4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{30705971-E7AA-4F4A-9C9A-9A6BA57EC8E4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{30705971-E7AA-4F4A-9C9A-9A6BA57EC8E4}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {91A4495D-C580-4BCA-A48F-A7562C960D77}
+	EndGlobalSection
+EndGlobal
