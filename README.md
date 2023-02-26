@@ -154,6 +154,9 @@ key = string.Join("-", new object[]
 });
 ```
 
-## Decrypt(byte[] array)
+## Decrypt()
+
+### Params
+* byte[] - array
 
 The decrypt & encrypt functions both make use of the key created above to decrypt the values within the ACD file.
