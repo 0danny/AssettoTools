@@ -59,7 +59,18 @@ namespace ACDBackend
 
             Logger($"EOF, returning: {entryList.Count} entries.");
 
+            cleanUp();
+
             return entryList;
+        }
+
+        public void cleanUp()
+        {
+            resetPosition();
+
+            data = null;
+
+            filePath = "";
         }
 
         public void resetPosition()

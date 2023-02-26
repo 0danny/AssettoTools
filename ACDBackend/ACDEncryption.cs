@@ -13,19 +13,17 @@ namespace ACDBackend
 
         public static void Decrypt(byte[] data)
         {
-            int num = key.Length - 1;
-            if (num < 0)
-            {
-                return;
-            }
             int i = 0;
+
             int num2 = 0;
-            int num3 = data.Length;
-            while (i < num3)
+
+            while (i < data.Length)
             {
                 int num4 = (int)((char)data[i] - key[num2]);
+
                 data[i] = (byte)((num4 < 0) ? (num4 + 256) : num4);
-                if (num2 == num)
+
+                if (num2 == key.Length - 1)
                 {
                     num2 = 0;
                 }
@@ -33,73 +31,105 @@ namespace ACDBackend
                 {
                     num2++;
                 }
+
                 i++;
             }
         }
 
-        public static void setupEncryption(string s)
+        public static void setupEncryption(string folderName)
         {
-            s = s.ToLower();
-            byte b = IntToByte(s.Aggregate(0, (int current, char t) => current + (int)t));
-            int num = 0;
-            for (int i = 0; i < s.Length - 1; i += 2)
-            {
-                num = num * (int)s[i] - (int)s[i + 1];
-            }
-            byte b2 = IntToByte(num);
-            int num2 = 0;
-            for (int j = 1; j < s.Length - 3; j += 3)
-            {
-                num2 *= (int)s[j];
-                num2 /= (int)(s[j + 1] + '\u001b');
-                num2 += -27 - (int)s[j - 1];
-            }
-            byte b3 = IntToByte(num2);
-            int num3 = 5763;
-            for (int k = 1; k < s.Length; k++)
-            {
-                num3 -= (int)s[k];
-            }
-            byte b4 = IntToByte(num3);
-            int num4 = 66;
-            for (int l = 1; l < s.Length - 4; l += 4)
-            {
-                num4 = (int)(s[l] + '\u000f') * num4 * (int)(s[l - 1] + '\u000f') + 22;
-            }
-            byte b5 = IntToByte(num4);
-            int num5 = 101;
-            for (int m = 0; m < s.Length - 2; m += 2)
-            {
-                num5 -= (int)s[m];
-            }
-            byte b6 = IntToByte(num5);
-            int num6 = 171;
-            for (int n = 0; n < s.Length - 2; n += 2)
-            {
-                num6 %= (int)s[n];
-            }
-            byte b7 = IntToByte(num6);
-            int num7 = 171;
-            for (int num8 = 0; num8 < s.Length - 1; num8++)
-            {
-                num7 = num7 / (int)s[num8] + (int)s[num8 + 1];
-            }
-            byte b8 = IntToByte(num7);
+            folderName = folderName.ToLower();
 
+            int aggregateSeed = folderName.Aggregate(0, (int current, char t) =>
+            {
+                Console.WriteLine($"Current: {current}, T: {t}, T(NUM): {(int)t}");
+
+                return current + t;
+            });
+
+            /* Octet 1 */
+            byte octet1 = intToByte(aggregateSeed);
+
+            /* Octet 2 */
+            int num = 0;
+            for (int i = 0; i < folderName.Length - 1; i += 2)
+            {
+                num = (num * folderName[i]) - folderName[i + 1];
+            }
+            byte octet2 = intToByte(num);
+            //-----------------------
+
+            /* Octet 3 */
+            int num2 = 0;
+            for (int j = 1; j < folderName.Length - 3; j += 3)
+            {
+                num2 = ((num2 * folderName[j]) / (folderName[j + 1] + 27)) - 27 - folderName[j - 1];
+            }
+            byte octet3 = intToByte(num2);
+            //-----------------------
+
+            /* Octet 4 */
+            int num3 = 5763;
+            for (int k = 1; k < folderName.Length; k++)
+            {
+                num3 -= folderName[k];
+            }
+            byte octet4 = intToByte(num3);
+            //-----------------------
+
+            /* Octet 5 */
+            int num4 = 66;
+            for (int l = 1; l < folderName.Length - 4; l += 4)
+            {
+                num4 = (folderName[l] + 15) * num4 * (folderName[l - 1] + 15) + 22;
+            }
+            byte octet5 = intToByte(num4);
+            //-----------------------
+
+            /* Octet 6 */
+            int num5 = 101;
+            for (int m = 0; m < folderName.Length - 2; m += 2)
+            {
+                num5 -= folderName[m];
+            }
+            byte octet6 = intToByte(num5);
+            //-----------------------
+
+            /* Octet 7 */
+            int num6 = 171;
+            for (int n = 0; n < folderName.Length - 2; n += 2)
+            {
+                num6 %= folderName[n];
+            }
+            byte octet7 = intToByte(num6);
+            //-----------------------
+
+            /* Octet 8 */
+            int num7 = 171;
+            for (int num8 = 0; num8 < folderName.Length - 1; num8++)
+            {
+                num7 = num7 / folderName[num8] + folderName[num8 + 1];
+            }
+            byte octet8 = intToByte(num7);
+            //-----------------------
+
+            //Concatenating the key
             key = string.Join("-", new object[]
             {
-                b,
-                b2,
-                b3,
-                b4,
-                b5,
-                b6,
-                b7,
-                b8
+                octet1,
+                octet2,
+                octet3,
+                octet4,
+                octet5,
+                octet6,
+                octet7,
+                octet8
             });
+
+            Console.WriteLine($"[ACD Encryption]: Got key - {key}");
         }
 
-        private static byte IntToByte(int value)
+        private static byte intToByte(int value)
         {
             return (byte)((value % 256 + 256) % 256);
         }
