@@ -48,7 +48,7 @@ Each octet is concatenated with a "-" delimiter.
      });
 ```
 
-Firstly the folderName is converted to lower case and its characters represented as an integer are summed together, this gives:
+Firstly the folderName is converted to lower case and its characters represented as its unicode counterpart are summed together, this gives:
 
 #### 2278
 
