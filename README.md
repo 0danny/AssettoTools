@@ -8,7 +8,7 @@ Comes with in-house ACD extractor and decryptor, custom wrote. Please see ACDBac
 
 # ACD Extractor
 
-Below is an explanation on how the CreateKey & Decryption functions work. Assetto utilizies a simple ROT algorithim for the encryption/decryption.
+Below is an explanation on how the CreateKey & Decryption functions work. Assetto utilises a simple ROT algorithim for the encryption/decryption.
 
 ## Helper Functions
 
