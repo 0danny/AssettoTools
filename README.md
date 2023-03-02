@@ -6,6 +6,15 @@ Will be able to modifiy all INI files from a desktop application.
 
 Comes with in-house ACD extractor and decryptor, custom wrote. Please see ACDBackend project.
 
+Text editor is AvalonEdit, custom made syntax highlighting so it may not be perfect. Still working on it.
+
+As of right now if you want to use, you will need to build it yourself.
+
+## Pictures
+
+![image](https://user-images.githubusercontent.com/14921414/222433647-03cfb710-ac13-4f51-9356-728c46af9e70.png)
+
+
 # ACD Extractor
 
 Below is an explanation on how the CreateKey & Decryption functions work. Assetto utilises a simple ROT algorithim for the encryption/decryption.
