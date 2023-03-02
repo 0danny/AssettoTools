@@ -11,15 +11,13 @@ namespace ACDBackend
     {
         public static string key = "";
 
-        public static void Decrypt(byte[] data)
+        public static void decrypt(byte[] data)
         {
-            int i = 0;
-
             int num2 = 0;
 
-            while (i < data.Length)
+            for(int i = 0; i < data.Length; i++)
             {
-                int num4 = (int)((char)data[i] - key[num2]);
+                int num4 = ((char)data[i] - key[num2]);
 
                 data[i] = (byte)((num4 < 0) ? (num4 + 256) : num4);
 
@@ -31,8 +29,6 @@ namespace ACDBackend
                 {
                     num2++;
                 }
-
-                i++;
             }
         }
 
@@ -42,8 +38,6 @@ namespace ACDBackend
 
             int aggregateSeed = folderName.Aggregate(0, (int current, char t) =>
             {
-                Console.WriteLine($"Current: {current}, T: {t}, T(NUM): {(int)t}");
-
                 return current + t;
             });
 

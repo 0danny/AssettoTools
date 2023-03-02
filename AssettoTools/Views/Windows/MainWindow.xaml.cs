@@ -14,29 +14,27 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using ACDBackend;
+using AdonisUI.Controls;
+using AssettoTools.Core;
+using AssettoTools.ViewModels;
 
-namespace AssettoTools
+namespace AssettoTools.Views.Windows
 {
-    public partial class MainWindow : Window
+    public partial class MainWindow : AdonisWindow
     {
-        private string filePath = "ks_audi_sport_quattro\\data.acd";
+        public MainWindowViewModel viewModel { get; set; }
 
-        private ACDWorker acdWorker;
+        public Controller assettoTools { get; set; }
 
         public MainWindow()
         {
             InitializeComponent();
 
-            acdWorker = new ACDWorker(fixFilePath(filePath));
-        }
+            MainWindowViewModel.Instance = new();
+            viewModel = MainWindowViewModel.Instance;
+            DataContext = this;
 
-        private string fixFilePath(string name)
-        {
-            string desktopPath = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
-
-            string fullName = System.IO.Path.Combine(desktopPath, name);
-
-            return fullName;
+            assettoTools = new();
         }
     }
 }

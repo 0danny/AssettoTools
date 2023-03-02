@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -49,7 +50,7 @@ namespace ACDBackend
 
         public List<ACDEntry> getEntries()
         {
-            List<ACDEntry> entryList = new List<ACDEntry>();
+            List<ACDEntry> entryList = new();
 
             //Ensure we are not hitting EOF and still trying to read
             while(position < data.Length)
@@ -96,7 +97,7 @@ namespace ACDBackend
                 skip(3);
             }
 
-            ACDEncryption.Decrypt(_buffer);
+            ACDEncryption.decrypt(_buffer);
 
             return Encoding.Default.GetString(_buffer);
         }
@@ -159,7 +160,7 @@ namespace ACDBackend
 
         public void Logger(object data)
         {
-            Console.WriteLine($"[CustomReader]: {data}");
+            Trace.WriteLine($"[CustomReader]: {data}");
         }
     }
 }
