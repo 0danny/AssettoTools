@@ -154,6 +154,8 @@ key = string.Join("-", new object[]
 });
 ```
 
+I understand the above probably looks like gibberish and it's most likely easier to just read the code, however I thought I might aswell include it anyways.
+
 ## Decrypt()
 
 ### Params
