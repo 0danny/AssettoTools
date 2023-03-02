@@ -17,14 +17,22 @@ using ACDBackend;
 using AdonisUI.Controls;
 using AssettoTools.Core;
 using AssettoTools.ViewModels;
+using ICSharpCode.AvalonEdit.Highlighting.Xshd;
+using System.Xml;
+using ICSharpCode.AvalonEdit.Highlighting;
+using System.Runtime.Versioning;
 
 namespace AssettoTools.Views.Windows
 {
+    //This is to stop the call site errors, from below.
+    [SupportedOSPlatform("windows")]
     public partial class MainWindow : AdonisWindow
     {
         public MainWindowViewModel viewModel { get; set; }
 
         public Controller assettoTools { get; set; }
+
+        public static MainWindow mainWindow { get; set; }
 
         public MainWindow()
         {
@@ -35,6 +43,18 @@ namespace AssettoTools.Views.Windows
             DataContext = this;
 
             assettoTools = new();
+
+            prepareEditor();
+
+            mainWindow = this;
+        }
+
+        public void prepareEditor()
+        {
+            using (XmlTextReader reader = new XmlTextReader("Core\\External\\INIDefinition.xshd"))
+            {
+                viewModel.AvalonDefinition = HighlightingLoader.Load(reader, HighlightingManager.Instance);
+            }
         }
     }
 }

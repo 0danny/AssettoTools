@@ -8,6 +8,7 @@
         mc:Ignorable="d"
         Title="Assetto Tools" Height="720" Width="1280"
         xmlns:adonisUi="clr-namespace:AdonisUI;assembly=AdonisUI"
+        xmlns:avalonEdit="http://icsharpcode.net/sharpdevelop/avalonedit"
         xmlns:adonisControls="clr-namespace:AdonisUI.Controls;assembly=AdonisUI">
 
     <Window.Style>
@@ -20,13 +21,16 @@
                 <Grid>
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="25*"></ColumnDefinition>
-                        <ColumnDefinition Width="65*"></ColumnDefinition>
+                        <ColumnDefinition Width="50*"></ColumnDefinition>
+                        <ColumnDefinition Width="20*"></ColumnDefinition>
                     </Grid.ColumnDefinitions>
                     
                     <GridSplitter Grid.Column="1" HorizontalAlignment="Left" VerticalAlignment="Stretch" ShowsPreview="True" Width="5"/>
 
+                    <GridSplitter Grid.Column="2" HorizontalAlignment="Left" VerticalAlignment="Stretch" ShowsPreview="True" Width="5"/>
+
                     <GroupBox Grid.Column="0" Header="Assetto Cars">
-                        <ListBox HorizontalAlignment="Stretch" VerticalAlignment="Stretch" ItemsSource="{Binding viewModel.CarItems}">
+                        <ListBox HorizontalAlignment="Stretch" VerticalAlignment="Stretch" SelectedItem="{Binding viewModel.CarObject_Selected}" ItemsSource="{Binding viewModel.CarItems}">
                             <ListBox.ItemTemplate>
                                 <DataTemplate>
                                     <TextBlock Text="{Binding carName}"/>
@@ -34,7 +38,32 @@
                             </ListBox.ItemTemplate>
                         </ListBox>
                     </GroupBox>
+                    
+                    <GroupBox Grid.Column="2" Header="Car Files">
+                        <ListBox HorizontalAlignment="Stretch" VerticalAlignment="Stretch" SelectedItem="{Binding viewModel.FileObject_Selected}" ItemsSource="{Binding viewModel.FileItems}">
+                            <ListBox.ItemTemplate>
+                                <DataTemplate>
+                                    <TextBlock Text="{Binding name}"/>
+                                </DataTemplate>
+                            </ListBox.ItemTemplate>
+                        </ListBox>
+                    </GroupBox>
 
+
+
+                    <Grid Grid.Column="1" Margin="10,0,10,0">
+                        <avalonEdit:TextEditor
+                        x:Name="avalonEditor"
+                        SyntaxHighlighting="{Binding viewModel.AvalonDefinition}"
+                        FontFamily="Consolas"
+                        FontSize="10pt"
+                        Foreground="White"
+                        ShowLineNumbers="True"
+                        Background="#FF2A2B34"
+                        VerticalAlignment="Stretch"
+                        HorizontalAlignment="Stretch"/>
+                    </Grid>
+                   
                 </Grid>
             </TabItem>
         </TabControl>

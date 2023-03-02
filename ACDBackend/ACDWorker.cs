@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Reflection.PortableExecutable;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -10,19 +11,10 @@ namespace ACDBackend
 {
     public class ACDWorker
     {
-        private CustomReader reader { get; set; }
-
-        private List<ACDEntry> entryCache = new();
-
-        private string fileName { get; set; }
-        private string folderName { get; set; }
-
-        public ACDWorker(string _fileName)
+        public List<ACDEntry> getEntries(string _fileName)
         {
             //Setup worker
-            fileName = _fileName;
-
-            folderName = getFileName(fileName);
+            string folderName = getFileName(_fileName);
 
             Trace.WriteLine($"Got folder name: {folderName}");
 
@@ -30,16 +22,9 @@ namespace ACDBackend
             ACDEncryption.setupEncryption(folderName);
 
             //Setup reader
-            reader = new CustomReader(fileName);
-            
+            CustomReader reader = new CustomReader(_fileName);
             //Read data into array
-            entryCache = reader.getEntries();
-
-            //Print out the data
-            foreach(ACDEntry entry in entryCache)
-            {
-                Trace.WriteLine($"Filename: {entry.name}, Data: {entry.fileData}");
-            }
+            return reader.getEntries();
         }
 
         public string getFileName(string acdFilename)

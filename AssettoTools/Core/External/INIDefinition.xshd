@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<SyntaxDefinition name="INI" xmlns="http://icsharpcode.net/sharpdevelop/syntaxdefinition/2008">
+
+	<!-- Global colors -->
+	<Color name="Comment" foreground="LightGreen" />
+	<Color name="Header" foreground="LightBlue" />
+	<Color name="Foreground" foreground="White" />
+
+	<RuleSet>
+
+		<!-- Rules for comments. -->
+		<Span color="Comment" begin=";" end="\n" />
+		<Span color="Comment" begin="\/" end="\/" />
+
+		<!-- Rules for INI headers. -->
+		<Span color="Header" begin="\[" end="\]"></Span>
+
+		<!-- This rule fixes the bracket definitions within INI variables. -->
+		<Span color="Foreground" begin="\(" end="\)"></Span>
+
+		<!-- Rules for the INI variables -->
+		<Rule foreground="Orange">
+			(.*?)=
+		</Rule>
+
+		<Rule foreground="White">
+			=(.*?)
+		</Rule>
+
+    </RuleSet>
+</SyntaxDefinition>

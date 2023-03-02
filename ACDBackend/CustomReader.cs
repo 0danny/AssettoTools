@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -24,6 +25,8 @@ namespace ACDBackend
 
         private int position { get; set; } = 0;
 
+        private string dataPrefix { get; set; } = "\\data.acd";
+
         public CustomReader(string filePath)
         {
             this.filePath = filePath;
@@ -43,7 +46,7 @@ namespace ACDBackend
 
         public void readFile()
         {
-            data = File.ReadAllBytes(filePath);
+            data = File.ReadAllBytes($"{filePath}{dataPrefix}");
 
             Logger($"Read in {data.Length} bytes, with path: {filePath}");
         }
