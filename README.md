@@ -12,8 +12,17 @@ As of right now if you want to use, you will need to build it yourself.
 
 ## Pictures
 
-![image](https://user-images.githubusercontent.com/14921414/222433647-03cfb710-ac13-4f51-9356-728c46af9e70.png)
+![Program running.](https://user-images.githubusercontent.com/14921414/222444527-3d1192ff-2102-440b-a5ca-6d0c3f1b89bc.png)
 
+## TODO
+
+- Add a save button to re-encrypt ACD.
+- Add an area to set your Assetto path (Settings tab?)
+- Add a menu for less advanced users 
+     - Lets people edit simple things like turbo PSI, wastegate pressure etc.
+     - Good if they are unsure on how to edit the .INI files.
+- Add syntax highlighting for the .LUT files.
+     - It is kind of broken with brackets (look at preview nodes)
 
 # ACD Extractor
 
