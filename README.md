@@ -12,11 +12,11 @@ As of right now if you want to use, you will need to build it yourself.
 
 ## Pictures
 
-![Program running.](https://user-images.githubusercontent.com/14921414/222444527-3d1192ff-2102-440b-a5ca-6d0c3f1b89bc.png)
+![image](https://user-images.githubusercontent.com/14921414/222754666-81d267bd-a7f8-4496-a334-387ff6c3bebd.png)
 
 ## TODO
 
-- Add a save button to re-encrypt ACD.
+- ~~Add a save button to re-encrypt ACD.~~
 - Add an area to set your Assetto path (Settings tab?)
 - Add a menu for less advanced users 
      - Lets people edit simple things like turbo PSI, wastegate pressure etc.
@@ -180,3 +180,9 @@ I understand the above probably looks like gibberish and it's most likely easier
 * byte[] - array
 
 The decrypt & encrypt functions both make use of the key created above to decrypt the values within the ACD file.
+
+## Encrypt()
+
+### Params
+* byte[] - data
+* byte[] - result (pointer)
