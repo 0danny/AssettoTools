@@ -3,6 +3,7 @@ using AssettoTools.Core.Helper;
 using AssettoTools.Core.Tools;
 using AssettoTools.Views.Windows;
 using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
 using ICSharpCode.AvalonEdit.Highlighting;
 using System;
 using System.Collections.Generic;
@@ -91,10 +92,15 @@ namespace AssettoTools.ViewModels
 
             if(previousEntry != null && !string.IsNullOrEmpty(previousEntry.name))
             {
-                FileItems.Where(elem => elem == previousEntry).First().fileData = getEditorContent();
+                saveACDEntry(previousEntry);
             }
 
             setEditorContent(newEntry.fileData);
+        }
+
+        public void saveACDEntry(ACDEntry entry)
+        {
+            FileItems.Where(elem => elem == entry).First().fileData = getEditorContent();
         }
 
         //AvalonEdit does not have support for MVVM natively unfortunately due to its architecture. So I will need to modify and get text this way.
@@ -106,6 +112,17 @@ namespace AssettoTools.ViewModels
         public void setEditorContent(string text)
         {
             MainWindow.mainWindow.avalonEditor.Text = text;
+        }
+
+        [RelayCommand]
+        public void saveACD()
+        {
+            Logger.log($"Saving ACD for: {CarObject_Selected.carName}");
+
+            //Save the current file if we haven't already.
+            saveACDEntry(FileObject_Selected);
+
+            acdWorker.saveEntries(CarObject_Selected.fullPath, FileItems.ToList());
         }
 
         [ObservableProperty]

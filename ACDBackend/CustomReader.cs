@@ -27,7 +27,7 @@ namespace ACDBackend
 
         private string dataPrefix { get; set; } = "\\data.acd";
 
-        public CustomReader(string filePath)
+        public void prepareReader(string filePath)
         {
             this.filePath = filePath;
 

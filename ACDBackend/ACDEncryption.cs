@@ -11,6 +11,33 @@ namespace ACDBackend
     {
         public static string key = "";
 
+        public static void encrypt(string data, byte[] result)
+        {
+            encrypt(Encoding.ASCII.GetBytes(data), result);
+        }
+
+        public static void encrypt(byte[] data, byte[] result)
+        {
+            int num2 = 0;
+
+            for (int i = 0; i < data.Length; i++)
+            {
+                int num4 = (char)data[i] + key[num2];
+
+                result[i * 4] = (byte)((num4 >= 256) ? (num4 - 256) : num4);
+
+                if (num2 == key.Length - 1)
+                {
+                    num2 = 0;
+                }
+                else
+                {
+                    num2++;
+                }
+            }
+        }
+
+
         public static void decrypt(byte[] data)
         {
             int num2 = 0;

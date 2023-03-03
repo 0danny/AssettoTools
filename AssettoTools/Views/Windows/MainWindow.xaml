@@ -15,8 +15,13 @@
         <Style TargetType="Window" BasedOn="{StaticResource {x:Type Window}}"/>
     </Window.Style>
 
-    <Grid>
-        <TabControl>
+    <Grid VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="95*"></RowDefinition>
+            <RowDefinition Height="5*"></RowDefinition>
+        </Grid.RowDefinitions>
+        
+        <TabControl Grid.Row="0">
             <TabItem Header="Home">
                 <Grid>
                     <Grid.ColumnDefinitions>
@@ -67,5 +72,9 @@
                 </Grid>
             </TabItem>
         </TabControl>
+
+        <StackPanel Orientation="Horizontal" VerticalAlignment="Stretch" Grid.Row="1" Margin="5">
+            <Button Content="Save ACD" Command="{Binding viewModel.saveACDCommand}"></Button>
+        </StackPanel>
     </Grid>
 </adonisControls:AdonisWindow>
