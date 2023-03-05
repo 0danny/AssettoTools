@@ -44,9 +44,13 @@ namespace AssettoTools.Views.Windows
 
             assettoTools = new();
 
+            MainWindowViewModel.Instance.controller = assettoTools;
+
             prepareEditor();
 
             mainWindow = this;
+
+            Closing += viewModel.OnWindowClosing;
         }
 
         public void prepareEditor()

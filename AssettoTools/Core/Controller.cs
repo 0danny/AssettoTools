@@ -1,5 +1,7 @@
-﻿using AssettoTools.Core.Helper;
+﻿using AssettoTools.Core.Config;
+using AssettoTools.Core.Helper;
 using AssettoTools.Core.Tools;
+using AssettoTools.ViewModels;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,12 +14,20 @@ namespace AssettoTools.Core
     {
         public CarExplorer carExplorer = new();
 
+        public ConfigReader configReader = new();
+
         public Controller() 
         {
             Logger.log("AssettoTools created.");
 
-            //Populate cars within list
-            carExplorer.populateList();
+            //Read the config into model.
+            configReader.readConfig();
+
+            //Populate cars within list.
+            carExplorer.populateList(configReader.configModel.ACDDirectory);
+
+            //Set the current path
+            MainWindowViewModel.Instance.CurrentPath = configReader.configModel.ACDDirectory;
         }
     }
 }

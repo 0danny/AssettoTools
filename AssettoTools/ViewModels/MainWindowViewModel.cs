@@ -1,4 +1,5 @@
 ﻿using ACDBackend;
+using AssettoTools.Core;
 using AssettoTools.Core.Helper;
 using AssettoTools.Core.Tools;
 using AssettoTools.Views.Windows;
@@ -8,11 +9,13 @@ using ICSharpCode.AvalonEdit.Highlighting;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.Linq;
 using System.Runtime.Versioning;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Controls;
+using System.Windows.Forms;
 
 namespace AssettoTools.ViewModels
 {
@@ -23,6 +26,8 @@ namespace AssettoTools.ViewModels
 
         private ACDWorker acdWorker = new();
 
+        public Controller controller { get; set; }
+
         /* Home Tab */
 
         [ObservableProperty]
@@ -30,6 +35,9 @@ namespace AssettoTools.ViewModels
 
         [ObservableProperty]
         public ObservableCollection<ACDEntry> fileItems = new();
+
+        [ObservableProperty]
+        public string currentPath = "Current Path: ";
 
         //Doing this manually, because the toolkit plays up
         public CarObject carObject_Selected = new();
@@ -78,19 +86,28 @@ namespace AssettoTools.ViewModels
             //Clear file items
             FileItems.Clear();
 
-            FileItems = new ObservableCollection<ACDEntry>(acdWorker.getEntries(carObject.fullPath));
+            List<ACDEntry> entries = acdWorker.getEntries(carObject.fullPath);
+
+            if (entries != null)
+            {
+                FileItems = new ObservableCollection<ACDEntry>(entries);
+            }
+            else
+            {
+                Logger.log($"Skipping {carObject.carName} entries null.");
+            }
         }
 
         public void fileObject_Changed(ACDEntry previousEntry, ACDEntry newEntry)
         {
-            if(newEntry == null)
+            if (newEntry == null)
             {
                 return;
             }
 
             Logger.log($"ACD entry for {CarObject_Selected.carName}, changed to: {newEntry.name}.");
 
-            if(previousEntry != null && !string.IsNullOrEmpty(previousEntry.name))
+            if (previousEntry != null && !string.IsNullOrEmpty(previousEntry.name))
             {
                 saveACDEntry(previousEntry);
             }
@@ -123,15 +140,33 @@ namespace AssettoTools.ViewModels
             saveACDEntry(FileObject_Selected);
 
             acdWorker.saveEntries(CarObject_Selected.fullPath, FileItems.ToList());
+
+            Utilities.showMessageBox("Successfully saved data.acd file.");
+        }
+
+        public void OnWindowClosing(object sender, CancelEventArgs e)
+        {
+            controller.configReader.saveConfig();
+        }
+
+        [RelayCommand]
+        public void setAssettoPath()
+        {
+            using (var dialog = new FolderBrowserDialog())
+            {
+                DialogResult result = dialog.ShowDialog();
+
+                Logger.log($"Got Assetto root path: {dialog.SelectedPath}");
+
+                CurrentPath = $"Current Path: {dialog.SelectedPath}";
+
+                controller.configReader.configModel.ACDDirectory = dialog.SelectedPath;
+
+                controller.carExplorer.populateList(dialog.SelectedPath);
+            }
         }
 
         [ObservableProperty]
         public IHighlightingDefinition avalonDefinition = null;
-
-        /* Settings Tab */
-
-        //Hard-coding mine for now, will be able to set in "Settings" menu.
-        [ObservableProperty]
-        public string assettoCorsaPath = "E:\\SteamLibrary\\steamapps\\common\\assettocorsa";
     }
 }

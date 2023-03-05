@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
 
 namespace AssettoTools.Core.Helper
 {
@@ -27,6 +28,11 @@ namespace AssettoTools.Core.Helper
         public static bool isDirectoryEmpty(string path)
         {
             return !Directory.EnumerateFileSystemEntries(path).Any();
+        }
+
+        public static MessageBoxResult showMessageBox(string messageBoxText)
+        {
+            return MessageBox.Show(messageBoxText, "Assetto Tools", MessageBoxButton.OK, MessageBoxImage.Warning, MessageBoxResult.Yes);
         }
     }
 }

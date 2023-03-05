@@ -27,9 +27,18 @@ namespace AssettoTools.Core.Tools
             Logger.log("CarExplorer created.");
         }
 
-        public void populateList()
+        public void populateList(string filePath)
         {
-            carsPath = $"{MainWindowViewModel.Instance.AssettoCorsaPath}{carsPrefix}";
+            if(string.IsNullOrEmpty(filePath))
+            {
+                Logger.log("File path is empty, config not filled in?");
+
+                Utilities.showMessageBox("Please set your Assetto Corsa path, located at the bottom portion of the window.");
+
+                return;
+            }
+
+            carsPath = $"{filePath}{carsPrefix}";
 
             if (!precautionChecks(carsPath))
             {

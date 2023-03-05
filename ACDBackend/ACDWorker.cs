@@ -14,6 +14,10 @@ namespace ACDBackend
         private CustomReader reader = new();
         private CustomWriter writer = new();
 
+        public string dataPrefix { get; set; } = "\\data.acd";
+
+        public string dataFolderPrefix { get; set; } = "\\data";
+
         public void saveEntries(string filePath, List<ACDEntry> entries)
         {
             //Running this again for saveEntries just ensures that we have the write key.
@@ -24,18 +28,46 @@ namespace ACDBackend
                 return;
             }
 
-            writer.saveACD($"{filePath}\\data.acd", entries);
+            writer.saveACD($"{filePath}\\{dataPrefix}", entries);
         }
 
         public List<ACDEntry> getEntries(string filePath)
         {
-            setupEncryption(filePath);
+            //If the data folder already exists, just read the files from the folder.
+            if(Directory.Exists($"{filePath}{dataFolderPrefix}"))
+            {
+                Logger($"Data folder for: {filePath} already exists, reading...");
 
-            //Setup reader
-            reader.prepareReader(filePath);
+                List<ACDEntry> entries = new();
 
-            //Read data into array
-            return reader.getEntries();
+                foreach (FileInfo file in new DirectoryInfo($"{filePath}{dataFolderPrefix}").GetFiles())
+                {
+                    entries.Add(new ACDEntry() { name = file.Name, fileData = File.ReadAllText(file.FullName)});
+                }
+
+                return entries;
+            }
+            else
+            {
+                //Ensure the ACD actually exists before attempting to read it.
+
+                if (File.Exists($"{filePath}{dataPrefix}"))
+                {
+                    setupEncryption(filePath);
+
+                    //Setup reader
+                    reader.prepareReader($"{filePath}{dataPrefix}");
+
+                    //Read data into array
+                    return reader.getEntries();
+                }
+                else
+                {
+                    Logger($"{filePath} contains no ACD or DATA folder, skipping...");
+
+                    return null;
+                }
+            } 
         }
 
         public void setupEncryption(string filePath)
@@ -43,7 +75,7 @@ namespace ACDBackend
             //Setup worker
             string folderName = getFolderName(filePath);
 
-            Trace.WriteLine($"Got folder name: {folderName}");
+            Logger($"Got folder name: {folderName}");
 
             //Setup encryption, using folder name as encryption key.
             ACDEncryption.setupEncryption(folderName);
@@ -53,6 +85,11 @@ namespace ACDBackend
         {
             var name = Path.GetFileName(acdFilename) ?? "";
             return name.StartsWith("data", StringComparison.OrdinalIgnoreCase) ? Path.GetFileName(Path.GetDirectoryName(acdFilename)) : name;
+        }
+
+        public void Logger(object data)
+        {
+            Trace.WriteLine($"[ACDWorker]: {data}");
         }
     }
 

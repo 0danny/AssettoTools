@@ -25,8 +25,6 @@ namespace ACDBackend
 
         private int position { get; set; } = 0;
 
-        private string dataPrefix { get; set; } = "\\data.acd";
-
         public void prepareReader(string filePath)
         {
             this.filePath = filePath;
@@ -46,7 +44,7 @@ namespace ACDBackend
 
         public void readFile()
         {
-            data = File.ReadAllBytes($"{filePath}{dataPrefix}");
+            data = File.ReadAllBytes(filePath);
 
             Logger($"Read in {data.Length} bytes, with path: {filePath}");
         }
