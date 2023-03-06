@@ -40,45 +40,32 @@ namespace AssettoTools.ViewModels
         public string currentPath = "Current Path: ";
 
         //Doing this manually, because the toolkit plays up
-        public CarObject carObject_Selected = new();
+        [ObservableProperty]
+        public CarObject currentCarObject = new();
 
-        public CarObject CarObject_Selected
+        [ObservableProperty]
+        public ACDEntry currentFileObject = new();
+
+        partial void OnCurrentFileObjectChanging(ACDEntry value)
         {
-            get
+            if (value == null)
             {
-                return carObject_Selected;
+                return;
             }
-            set
+
+            Logger.log($"ACD entry for {CurrentCarObject.carName}, changed to: {value.name} from {CurrentFileObject.name}.");
+
+            if (CurrentFileObject != null && !string.IsNullOrEmpty(CurrentFileObject.name))
             {
-                carObject_Selected = value;
-
-                carObject_Changed(value);
-
-                OnPropertyChanged("CarObject_Selected");
+                saveACDEntry(CurrentFileObject);
             }
+
+            setEditorContent(value.fileData);
         }
 
-        public ACDEntry fileObject_Selected = new();
-
-        public ACDEntry FileObject_Selected
+        partial void OnCurrentCarObjectChanged(CarObject value)
         {
-            get
-            {
-                return fileObject_Selected;
-            }
-            set
-            {
-                fileObject_Changed(fileObject_Selected, value);
-
-                fileObject_Selected = value;
-
-                OnPropertyChanged("FileObject_Selected");
-            }
-        }
-
-        public void carObject_Changed(CarObject carObject)
-        {
-            Logger.log($"Car object changed to: {carObject.carName}");
+            Logger.log($"Car object changed to: {value.carName}");
 
             //Clear editor
             setEditorContent("");
@@ -86,7 +73,7 @@ namespace AssettoTools.ViewModels
             //Clear file items
             FileItems.Clear();
 
-            List<ACDEntry> entries = acdWorker.getEntries(carObject.fullPath);
+            List<ACDEntry> entries = acdWorker.getEntries(value.fullPath);
 
             if (entries != null)
             {
@@ -94,25 +81,8 @@ namespace AssettoTools.ViewModels
             }
             else
             {
-                Logger.log($"Skipping {carObject.carName} entries null.");
+                Logger.log($"Skipping {value.carName} entries null.");
             }
-        }
-
-        public void fileObject_Changed(ACDEntry previousEntry, ACDEntry newEntry)
-        {
-            if (newEntry == null)
-            {
-                return;
-            }
-
-            Logger.log($"ACD entry for {CarObject_Selected.carName}, changed to: {newEntry.name}.");
-
-            if (previousEntry != null && !string.IsNullOrEmpty(previousEntry.name))
-            {
-                saveACDEntry(previousEntry);
-            }
-
-            setEditorContent(newEntry.fileData);
         }
 
         public void saveACDEntry(ACDEntry entry)
@@ -134,12 +104,12 @@ namespace AssettoTools.ViewModels
         [RelayCommand]
         public void saveACD()
         {
-            Logger.log($"Saving ACD for: {CarObject_Selected.carName}");
+            Logger.log($"Saving ACD for: {CurrentCarObject.carName}");
 
             //Save the current file if we haven't already.
-            saveACDEntry(FileObject_Selected);
+            saveACDEntry(CurrentFileObject);
 
-            acdWorker.saveEntries(CarObject_Selected.fullPath, FileItems.ToList());
+            acdWorker.saveEntries(CurrentCarObject.fullPath, FileItems.ToList());
 
             Utilities.showMessageBox("Successfully saved data.acd file.");
         }

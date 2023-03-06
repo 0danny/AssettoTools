@@ -31,7 +31,7 @@
 
 
             <GroupBox Grid.Column="0" Header="Assetto Cars" Margin="0,0,0,0">
-                <ListBox HorizontalAlignment="Stretch" VerticalAlignment="Stretch" SelectedItem="{Binding viewModel.CarObject_Selected}" ItemsSource="{Binding viewModel.CarItems}">
+                <ListBox HorizontalAlignment="Stretch" VerticalAlignment="Stretch" SelectedItem="{Binding viewModel.CurrentCarObject}" ItemsSource="{Binding viewModel.CarItems}">
                     <ListBox.ItemTemplate>
                         <DataTemplate>
                             <TextBlock Text="{Binding carName}"/>
@@ -58,7 +58,7 @@
                         </Grid.ColumnDefinitions>
 
                         <GroupBox Grid.Column="1" Header="Car Files">
-                            <ListBox HorizontalAlignment="Stretch" VerticalAlignment="Stretch" SelectedItem="{Binding viewModel.FileObject_Selected}" ItemsSource="{Binding viewModel.FileItems}">
+                            <ListBox HorizontalAlignment="Stretch" VerticalAlignment="Stretch" SelectedItem="{Binding viewModel.CurrentFileObject}" ItemsSource="{Binding viewModel.FileItems}">
                                 <ListBox.ItemTemplate>
                                     <DataTemplate>
                                         <TextBlock Text="{Binding name}"/>
