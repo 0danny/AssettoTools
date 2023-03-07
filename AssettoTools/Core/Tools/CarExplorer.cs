@@ -18,6 +18,7 @@ namespace AssettoTools.Core.Tools
     {
         private readonly string carsPrefix = "\\content\\cars";
         private readonly string uiPrefix = "\\ui";
+        private readonly string skinsPrefix = "\\skins";
 
         //Cache this for later, in case we need it again
         public string carsPath = "";
@@ -29,7 +30,7 @@ namespace AssettoTools.Core.Tools
 
         public void populateList(string filePath)
         {
-            if(string.IsNullOrEmpty(filePath))
+            if (string.IsNullOrEmpty(filePath))
             {
                 Logger.log("File path is empty, config not filled in?");
 
@@ -57,7 +58,7 @@ namespace AssettoTools.Core.Tools
 
                     App.Current.Dispatcher.Invoke(delegate
                     {
-                        if(carObject != null)
+                        if (carObject != null)
                         {
                             MainWindowViewModel.Instance.CarItems.Add(carObject);
                         }
@@ -84,6 +85,8 @@ namespace AssettoTools.Core.Tools
             returnObject.fullPath = carFolder;
             returnObject.folderName = carFolder.Replace($"{carsPath}\\", "");
 
+            returnObject.previewImages = getImages(carFolder);
+
             string carName = getCarName(carFolder);
 
             returnObject.carName = carName == null ? returnObject.folderName : carName;
@@ -91,16 +94,46 @@ namespace AssettoTools.Core.Tools
             return returnObject;
         }
 
+        public string[] getImages(string carFolder)
+        {
+            if(!Directory.Exists($"{carFolder}{skinsPrefix}"))
+            {
+                Logger.log($"No skins for: {carFolder} returning...");
+                return null;
+            }
+
+            //Get the car preview images.
+            string[] folders = Directory.GetDirectories($"{carFolder}{skinsPrefix}");
+
+            for (int i = 0; i < folders.Length; i++)
+            {
+                string imageLoc = $"{folders[i]}\\preview.jpg";
+
+                if (File.Exists(imageLoc))
+                {
+                    folders[i] = imageLoc;
+                }
+                else
+                {
+                    Logger.log($"[{carFolder}] image number [{i}][{imageLoc}] does not exist.");
+                }
+            }
+
+            Logger.log($"Fetched {folders.Length} images for: {carFolder}");
+
+            return folders;
+        }
+
         public string getUIJSON(string carFolder)
         {
-            if(!Directory.Exists($"{carFolder}{uiPrefix}"))
+            if (!Directory.Exists($"{carFolder}{uiPrefix}"))
             {
                 Logger.log($"UI folder does not exist: {carFolder}");
 
                 return null;
             }
 
-            string[] jsonFiles = Directory.GetFiles($"{carFolder}{uiPrefix}", "*ui_car.json",SearchOption.TopDirectoryOnly);
+            string[] jsonFiles = Directory.GetFiles($"{carFolder}{uiPrefix}", "*ui_car.json", SearchOption.TopDirectoryOnly);
 
             if (jsonFiles.Length > 0)
             {
@@ -121,7 +154,7 @@ namespace AssettoTools.Core.Tools
 
             string uiCarsFile = getUIJSON(carFolder);
 
-            if(uiCarsFile == null)
+            if (uiCarsFile == null)
             {
                 return null;
             }
@@ -155,5 +188,6 @@ namespace AssettoTools.Core.Tools
         public string carName { get; set; }
         public string folderName { get; set; }
         public string fullPath { get; set; }
+        public string[] previewImages { get; set; }
     }
 }

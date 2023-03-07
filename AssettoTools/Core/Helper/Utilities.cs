@@ -30,9 +30,9 @@ namespace AssettoTools.Core.Helper
             return !Directory.EnumerateFileSystemEntries(path).Any();
         }
 
-        public static MessageBoxResult showMessageBox(string messageBoxText)
+        public static AdonisUI.Controls.MessageBoxResult showMessageBox(string messageBoxText)
         {
-            return MessageBox.Show(messageBoxText, "Assetto Tools", MessageBoxButton.OK, MessageBoxImage.Warning, MessageBoxResult.Yes);
+            return AdonisUI.Controls.MessageBox.Show(messageBoxText, "Assetto Tools", AdonisUI.Controls.MessageBoxButton.OK, AdonisUI.Controls.MessageBoxImage.Warning, AdonisUI.Controls.MessageBoxResult.Yes);
         }
     }
 }

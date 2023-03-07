@@ -46,6 +46,9 @@ namespace AssettoTools.ViewModels
         [ObservableProperty]
         public ACDEntry currentFileObject = new();
 
+        [ObservableProperty]
+        public string imagePath = "";
+
         partial void OnCurrentFileObjectChanging(ACDEntry value)
         {
             if (value == null)
@@ -53,12 +56,12 @@ namespace AssettoTools.ViewModels
                 return;
             }
 
-            Logger.log($"ACD entry for {CurrentCarObject.carName}, changed to: {value.name} from {CurrentFileObject.name}.");
-
             if (CurrentFileObject != null && !string.IsNullOrEmpty(CurrentFileObject.name))
             {
                 saveACDEntry(CurrentFileObject);
             }
+
+            Logger.log($"ACD entry changed to: {value.name}.");
 
             setEditorContent(value.fileData);
         }
@@ -78,9 +81,13 @@ namespace AssettoTools.ViewModels
             if (entries != null)
             {
                 FileItems = new ObservableCollection<ACDEntry>(entries);
+
+                ImagePath = value.previewImages[0];
             }
             else
             {
+                Utilities.showMessageBox($"{value.carName} does not have any data.");
+
                 Logger.log($"Skipping {value.carName} entries null.");
             }
         }

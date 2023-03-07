@@ -31,13 +31,33 @@
 
 
             <GroupBox Grid.Column="0" Header="Assetto Cars" Margin="0,0,0,0">
-                <ListBox HorizontalAlignment="Stretch" VerticalAlignment="Stretch" SelectedItem="{Binding viewModel.CurrentCarObject}" ItemsSource="{Binding viewModel.CarItems}">
-                    <ListBox.ItemTemplate>
-                        <DataTemplate>
-                            <TextBlock Text="{Binding carName}"/>
-                        </DataTemplate>
-                    </ListBox.ItemTemplate>
-                </ListBox>
+
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="30*"></RowDefinition>
+                        <RowDefinition Height="70*"></RowDefinition>
+                    </Grid.RowDefinitions>
+
+                    <Border Margin="20" Grid.Row="0" Background="{DynamicResource {x:Static adonisUi:Brushes.Layer2BackgroundBrush}}" CornerRadius="20">
+                        <Rectangle RadiusX="20" RadiusY="20" StrokeThickness="0">
+                            <Rectangle.Fill>
+                                <ImageBrush ImageSource="{Binding viewModel.ImagePath}" Stretch="UniformToFill"/>
+                            </Rectangle.Fill>
+                        </Rectangle>
+                    </Border>
+
+                    <Border Grid.Row="1" Background="{DynamicResource {x:Static adonisUi:Brushes.Layer2BackgroundBrush}}" Margin="5" CornerRadius="10" Padding="10">
+                        <ListBox HorizontalAlignment="Stretch" VerticalAlignment="Stretch" SelectedItem="{Binding viewModel.CurrentCarObject}" ItemsSource="{Binding viewModel.CarItems}" >
+                            <ListBox.ItemTemplate>
+                                <DataTemplate>
+                                    <TextBlock Text="{Binding carName}"/>
+                                </DataTemplate>
+                            </ListBox.ItemTemplate>
+                        </ListBox>
+                    </Border>
+
+                </Grid>
+
             </GroupBox>
 
             <GridSplitter Grid.Column="1" 
@@ -69,34 +89,40 @@
 
                         <GridSplitter Grid.Column="1" HorizontalAlignment="Left" VerticalAlignment="Stretch" ShowsPreview="True" Width="5"/>
 
-                        <Grid Grid.Column="0">
-                            <avalonEdit:TextEditor
+                        <avalonEdit:TextEditor
                         x:Name="avalonEditor"
+                        Grid.Column="0"
                         SyntaxHighlighting="{Binding viewModel.AvalonDefinition}"
                         FontFamily="Consolas"
                         FontSize="10pt"
                         Foreground="White"
+                        Padding="5,0,0,0"
                         ShowLineNumbers="True"
-                        Background="#FF2A2B34"
+                        Background="{DynamicResource {x:Static adonisUi:Brushes.Layer2BackgroundBrush}}"
                         VerticalAlignment="Stretch"
                         HorizontalAlignment="Stretch"
                         Margin="0,0,5,0"/>
-                        </Grid>
+
                     </Grid>
+                </TabItem>
+
+                <TabItem Header="Home">
+
+
                 </TabItem>
             </TabControl>
         </Grid>
 
 
         <StackPanel Orientation="Horizontal" VerticalAlignment="Stretch" Grid.Row="1" Margin="5">
-            
+
             <Button Content="Save ACD" Command="{Binding viewModel.saveACDCommand}" Margin="5"></Button>
 
             <StackPanel Orientation="Horizontal">
                 <Button Content="Set Assetto Path" Margin="5" Command="{Binding viewModel.setAssettoPathCommand}"></Button>
                 <Label Content="{Binding viewModel.CurrentPath}" VerticalAlignment="Center" Margin="5"></Label>
             </StackPanel>
-        
+
         </StackPanel>
     </Grid>
 </adonisControls:AdonisWindow>

@@ -55,6 +55,7 @@ namespace AssettoTools.Views.Windows
 
         public void prepareEditor()
         {
+            //Load syntax highlighting for avalonEdit.
             using (XmlTextReader reader = new XmlTextReader("Core\\External\\INIDefinition.xshd"))
             {
                 viewModel.AvalonDefinition = HighlightingLoader.Load(reader, HighlightingManager.Instance);
