@@ -12,12 +12,14 @@ As of right now if you want to use, you will need to build it yourself.
 
 ## Pictures
 
-![image](https://user-images.githubusercontent.com/14921414/222754666-81d267bd-a7f8-4496-a334-387ff6c3bebd.png)
+![image](https://user-images.githubusercontent.com/14921414/223351743-99046f84-5e5b-47a3-9d1d-e34d894ba87d.png)
 
 ## TODO
 
 - ~~Add a save button to re-encrypt ACD.~~
-- Add an area to set your Assetto path (Settings tab?)
+- ~~Add an area to set your Assetto path (Settings tab?)~~
+- Dark/Light mode switch.
+- Fix saving for cars that don't have a ACD & just data folder.
 - Add a menu for less advanced users 
      - Lets people edit simple things like turbo PSI, wastegate pressure etc.
      - Good if they are unsure on how to edit the .INI files.
