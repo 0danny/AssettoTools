@@ -13,6 +13,7 @@ namespace AssettoTools.Core
     public class Controller
     {
         public CarExplorer carExplorer = new();
+        public FileExplorer fileExplorer = new();
 
         public ConfigReader configReader = new();
 

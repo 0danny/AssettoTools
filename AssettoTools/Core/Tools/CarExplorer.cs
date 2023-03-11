@@ -1,4 +1,5 @@
 ﻿using AssettoTools.Core.Helper;
+using AssettoTools.Core.Models;
 using AssettoTools.ViewModels;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
@@ -163,9 +164,7 @@ namespace AssettoTools.Core.Tools
 
             try
             {
-                dynamic parsedJSON = JObject.Parse(jsonContents);
-
-                return parsedJSON.name;
+                return ((dynamic)JObject.Parse(jsonContents)).name;
             }
             catch (JsonReaderException ex)
             {
@@ -181,13 +180,5 @@ namespace AssettoTools.Core.Tools
 
             return Directory.Exists(carsPath);
         }
-    }
-
-    public class CarObject
-    {
-        public string carName { get; set; }
-        public string folderName { get; set; }
-        public string fullPath { get; set; }
-        public string[] previewImages { get; set; }
     }
 }

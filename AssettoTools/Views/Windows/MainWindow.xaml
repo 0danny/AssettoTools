@@ -7,6 +7,7 @@
         d:DataContext="{d:DesignInstance local:MainWindow,IsDesignTimeCreatable=True}"
         mc:Ignorable="d"
         Title="Assetto Tools" Height="720" Width="1280"
+        xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
         xmlns:adonisUi="clr-namespace:AdonisUI;assembly=AdonisUI"
         xmlns:avalonEdit="http://icsharpcode.net/sharpdevelop/avalonedit"
         xmlns:adonisControls="clr-namespace:AdonisUI.Controls;assembly=AdonisUI">
@@ -23,9 +24,9 @@
 
         <Grid Grid.Row="0" Margin="5,5,5,0">
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="25*"></ColumnDefinition>
+                <ColumnDefinition Width="28*"></ColumnDefinition>
                 <ColumnDefinition Width="Auto"></ColumnDefinition>
-                <ColumnDefinition Width="75*"></ColumnDefinition>
+                <ColumnDefinition Width="72*"></ColumnDefinition>
 
             </Grid.ColumnDefinitions>
 
@@ -38,7 +39,7 @@
                         <RowDefinition Height="70*"></RowDefinition>
                     </Grid.RowDefinitions>
 
-                    <Border Margin="20" Grid.Row="0" Background="{DynamicResource {x:Static adonisUi:Brushes.Layer2BackgroundBrush}}" CornerRadius="20">
+                    <Border Grid.Row="0" Margin="20" Background="{DynamicResource {x:Static adonisUi:Brushes.Layer2BackgroundBrush}}" CornerRadius="20">
                         <Rectangle RadiusX="20" RadiusY="20" StrokeThickness="0">
                             <Rectangle.Fill>
                                 <ImageBrush ImageSource="{Binding viewModel.ImagePath}" Stretch="UniformToFill"/>
@@ -68,8 +69,8 @@
                           ResizeDirection="Columns"
                           ResizeBehavior="PreviousAndNext"/>
 
-            <TabControl Grid.Column="2" BorderThickness="0">
-                <TabItem Header="Editor">
+            <TabControl Grid.Column="2" BorderThickness="0" SelectedIndex="{Binding viewModel.CurrentTab}">
+                <TabItem Header="Editor" Name="Editor">
 
                     <Grid>
                         <Grid.ColumnDefinitions>
@@ -106,7 +107,83 @@
                     </Grid>
                 </TabItem>
 
-                <TabItem Header="Home">
+                <TabItem Header="Home" Name="Home">
+
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="*"></RowDefinition>
+                            <RowDefinition Height="*"></RowDefinition>
+                        </Grid.RowDefinitions>
+
+                        <Grid Grid.Row="0" Margin="0,0,0,2">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition></ColumnDefinition>
+                                <ColumnDefinition></ColumnDefinition>
+                            </Grid.ColumnDefinitions>
+
+                            <GroupBox Grid.Column="0" Margin="0,0,2,0" Background="{DynamicResource {x:Static adonisUi:Brushes.Layer2BackgroundBrush}}">
+
+                                <GroupBox.Header>
+                                    <StackPanel Orientation="Horizontal">
+                                        <iconPacks:PackIconMaterial Kind="CarTurbocharger" Margin="0,0,5,0" VerticalAlignment="Center"/>
+                                        <Label Content="Turbo Tuning" FontWeight="Light"></Label>
+                                    </StackPanel>
+                                </GroupBox.Header>
+                                
+                                <StackPanel Orientation="Vertical" HorizontalAlignment="Stretch" VerticalAlignment="Center" Grid.Column="0" Margin="5,0,5,5">
+
+                                    
+                                    
+                                    <StackPanel Orientation="Vertical">
+                                        <Label Content="Current Turbo" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0,0,0,5"></Label>
+
+                                        <ComboBox></ComboBox>
+                                    </StackPanel>
+
+                                    <Separator Background="{DynamicResource {x:Static adonisUi:Brushes.Layer3BackgroundBrush}}" Height="20"></Separator>
+
+                                    <DockPanel Margin="0,0,0,10" LastChildFill="True">
+                                        <Label Content="Max Boost: " DockPanel.Dock="Left" VerticalAlignment="Center" Margin="0,0,5,0"></Label>
+                                        <TextBox HorizontalAlignment="Stretch"></TextBox>
+                                    </DockPanel>
+
+                                    <DockPanel LastChildFill="True" Margin="0,0,0,10">
+                                        <Label Content="Wastegate: " DockPanel.Dock="Left" VerticalAlignment="Center" Margin="0,0,5,0"></Label>
+                                        <TextBox HorizontalAlignment="Stretch"></TextBox>
+                                    </DockPanel>
+
+                                    <DockPanel LastChildFill="True">
+                                        <Label Content="Reference RPM: " DockPanel.Dock="Left" VerticalAlignment="Center" Margin="0,0,5,0"></Label>
+                                        <TextBox HorizontalAlignment="Stretch"></TextBox>
+                                    </DockPanel>
+
+                                    <Separator Background="{DynamicResource {x:Static adonisUi:Brushes.Layer3BackgroundBrush}}" Height="20"></Separator>
+
+                                    <Button Content="Add Turbo"></Button>
+
+                                </StackPanel>
+                                
+                            </GroupBox>
+
+                            <GroupBox Grid.Column="1" Margin="2,0,0,0" Background="{DynamicResource {x:Static adonisUi:Brushes.Layer2BackgroundBrush}}">
+
+                                <GroupBox.Header>
+                                    <Label Content="Transmission" FontWeight="Light"></Label>
+                                </GroupBox.Header>
+
+                            </GroupBox>
+
+                        </Grid>
+
+
+                        <GroupBox Grid.Row="1" Margin="0,5,0,0" Background="{DynamicResource {x:Static adonisUi:Brushes.Layer2BackgroundBrush}}">
+
+                            <GroupBox.Header>
+                                <Label Content="Individual Changes" FontWeight="Light"></Label>
+                            </GroupBox.Header>
+
+                        </GroupBox>
+                    </Grid>
 
 
                 </TabItem>

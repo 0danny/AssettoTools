@@ -1,6 +1,7 @@
 ﻿using ACDBackend;
 using AssettoTools.Core;
 using AssettoTools.Core.Helper;
+using AssettoTools.Core.Models;
 using AssettoTools.Core.Tools;
 using AssettoTools.Views.Windows;
 using CommunityToolkit.Mvvm.ComponentModel;
@@ -21,20 +22,35 @@ namespace AssettoTools.ViewModels
 {
     public partial class MainWindowViewModel : ObservableObject
     {
-        //I know this isn't ideal MVVM, but it's only a small project.
+        //I know this isn't ideal MVVM, but it's only a small project (I think ): )
         public static MainWindowViewModel Instance { get; set; }
-
-        private ACDWorker acdWorker = new();
 
         public Controller controller { get; set; }
 
-        /* Home Tab */
+        [ObservableProperty]
+        public int currentTab = 0;
 
+        partial void OnCurrentTabChanged(int value)
+        {
+            Logger.log($"Tab changed to {value}");
+
+            //This needs to be done if I want to make a seperate editor and have it live update.
+            if(value == 0)
+            {
+                //Editor tab.
+            }
+            else
+            {
+                //Every other tab.
+            }
+        }
+
+        /* Editor Tab */
         [ObservableProperty]
         public ObservableCollection<CarObject> carItems = new();
 
         [ObservableProperty]
-        public ObservableCollection<ACDEntry> fileItems = new();
+        public ObservableCollection<FileObject> fileItems = new();
 
         [ObservableProperty]
         public string currentPath = "Current Path: ";
@@ -44,12 +60,12 @@ namespace AssettoTools.ViewModels
         public CarObject currentCarObject = new();
 
         [ObservableProperty]
-        public ACDEntry currentFileObject = new();
+        public FileObject currentFileObject = new();
 
         [ObservableProperty]
         public string imagePath = "";
 
-        partial void OnCurrentFileObjectChanging(ACDEntry value)
+        partial void OnCurrentFileObjectChanging(FileObject value)
         {
             if (value == null)
             {
@@ -58,12 +74,12 @@ namespace AssettoTools.ViewModels
 
             if (CurrentFileObject != null && !string.IsNullOrEmpty(CurrentFileObject.name))
             {
-                saveACDEntry(CurrentFileObject);
+                //saveACDEntry(CurrentFileObject);
             }
 
             Logger.log($"ACD entry changed to: {value.name}.");
 
-            setEditorContent(value.fileData);
+            setEditorContent(value.getFileData());
         }
 
         partial void OnCurrentCarObjectChanged(CarObject value)
@@ -76,13 +92,18 @@ namespace AssettoTools.ViewModels
             //Clear file items
             FileItems.Clear();
 
-            List<ACDEntry> entries = acdWorker.getEntries(value.fullPath);
+            List<FileObject> entries = controller.fileExplorer.getEntries(value.fullPath);
 
             if (entries != null)
             {
-                FileItems = new ObservableCollection<ACDEntry>(entries);
+                //Ask the File Explorer to populate the INI list.
+
+                //Setup Editor Tab
+                FileItems = new ObservableCollection<FileObject>(entries);
 
                 ImagePath = value.previewImages[0];
+
+                //Setup Home Tab
             }
             else
             {
@@ -94,7 +115,7 @@ namespace AssettoTools.ViewModels
 
         public void saveACDEntry(ACDEntry entry)
         {
-            FileItems.Where(elem => elem == entry).First().fileData = getEditorContent();
+            //FileItems.Where(elem => elem == entry).First().fileData = getEditorContent();
         }
 
         //AvalonEdit does not have support for MVVM natively unfortunately due to its architecture. So I will need to modify and get text this way.
@@ -114,9 +135,9 @@ namespace AssettoTools.ViewModels
             Logger.log($"Saving ACD for: {CurrentCarObject.carName}");
 
             //Save the current file if we haven't already.
-            saveACDEntry(CurrentFileObject);
+            //saveACDEntry(CurrentFileObject);
 
-            acdWorker.saveEntries(CurrentCarObject.fullPath, FileItems.ToList());
+            //acdWorker.saveEntries(CurrentCarObject.fullPath, FileItems.ToList());
 
             Utilities.showMessageBox("Successfully saved data.acd file.");
         }
@@ -145,5 +166,9 @@ namespace AssettoTools.ViewModels
 
         [ObservableProperty]
         public IHighlightingDefinition avalonDefinition = null;
+
+        /* Home Tab */
+
+
     }
 }

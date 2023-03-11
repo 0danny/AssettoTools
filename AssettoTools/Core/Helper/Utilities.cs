@@ -25,6 +25,11 @@ namespace AssettoTools.Core.Helper
             return name.StartsWith("data", StringComparison.OrdinalIgnoreCase) ? Path.GetFileName(Path.GetDirectoryName(fileName)) : name;
         }
 
+        public static StreamReader stringToReader(string data)
+        {
+            return new StreamReader(new MemoryStream(Encoding.ASCII.GetBytes(data)));
+        }
+
         public static bool isDirectoryEmpty(string path)
         {
             return !Directory.EnumerateFileSystemEntries(path).Any();
