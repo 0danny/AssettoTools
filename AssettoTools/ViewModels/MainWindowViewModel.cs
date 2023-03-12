@@ -11,6 +11,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.Linq;
 using System.Runtime.Versioning;
 using System.Text;
@@ -32,16 +33,19 @@ namespace AssettoTools.ViewModels
 
         partial void OnCurrentTabChanged(int value)
         {
-            Logger.log($"Tab changed to {value}");
+            Logger.log($"Tab changed to {value}.");
 
             //This needs to be done if I want to make a seperate editor and have it live update.
-            if(value == 0)
+            if(value == 0) //Editor Tab
             {
                 //Editor tab.
+                CurrentFileObject = null;
+                setEditorContent("");
             }
-            else
+            else if(value == 1) //Home Tab
             {
-                //Every other tab.
+                //Re-parse the INI's.
+                setupHomeTab();
             }
         }
 
@@ -74,7 +78,7 @@ namespace AssettoTools.ViewModels
 
             if (CurrentFileObject != null && !string.IsNullOrEmpty(CurrentFileObject.name))
             {
-                //saveACDEntry(CurrentFileObject);
+                saveACDEntry(CurrentFileObject);
             }
 
             Logger.log($"ACD entry changed to: {value.name}.");
@@ -102,8 +106,6 @@ namespace AssettoTools.ViewModels
                 FileItems = new ObservableCollection<FileObject>(entries);
 
                 ImagePath = value.previewImages[0];
-
-                //Setup Home Tab
             }
             else
             {
@@ -113,9 +115,18 @@ namespace AssettoTools.ViewModels
             }
         }
 
-        public void saveACDEntry(ACDEntry entry)
+        public void saveACDEntry(FileObject entry)
         {
-            //FileItems.Where(elem => elem == entry).First().fileData = getEditorContent();
+            int entryID = FileItems.IndexOf(entry);
+
+            if(entryID != -1)
+            {
+                FileItems[entryID].fileData = getEditorContent();
+            }
+            else
+            {
+                Logger.log($"Could not save file: {entry.name}");
+            }
         }
 
         //AvalonEdit does not have support for MVVM natively unfortunately due to its architecture. So I will need to modify and get text this way.
@@ -135,9 +146,9 @@ namespace AssettoTools.ViewModels
             Logger.log($"Saving ACD for: {CurrentCarObject.carName}");
 
             //Save the current file if we haven't already.
-            //saveACDEntry(CurrentFileObject);
+            saveACDEntry(CurrentFileObject);
 
-            //acdWorker.saveEntries(CurrentCarObject.fullPath, FileItems.ToList());
+            controller.fileExplorer.saveEntries(CurrentCarObject.fullPath, FileItems.ToList());
 
             Utilities.showMessageBox("Successfully saved data.acd file.");
         }
@@ -169,6 +180,34 @@ namespace AssettoTools.ViewModels
 
         /* Home Tab */
 
+        [ObservableProperty]
+        public string carName;
 
+        [ObservableProperty]
+        public ObservableCollection<ComboBoxItem> turboItems = new();
+
+        public void setupHomeTab()
+        {
+            //Reparse all INI's because they may have changed it in the code editor.
+
+            //Save last file
+            saveACDEntry(CurrentFileObject);
+
+            //Reparse
+            controller.fileExplorer.reparseINIs();
+
+            //Turbo Panel
+            TurboItems.Clear();
+
+
+
+            //Individual Panel
+            CarName = FileItems[controller.fileExplorer.getFileIndex("car.ini")].headerData["INFO"]["SCREEN_NAME"];
+        }
+
+        partial void OnCarNameChanged(string value)
+        {
+            FileItems[controller.fileExplorer.getFileIndex("car.ini")].headerData["INFO"]["SCREEN_NAME"] = CarName;
+        }
     }
 }

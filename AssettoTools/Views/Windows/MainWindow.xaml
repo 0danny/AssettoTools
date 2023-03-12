@@ -182,6 +182,14 @@
                                 <Label Content="Individual Changes" FontWeight="Light"></Label>
                             </GroupBox.Header>
 
+                            <StackPanel Orientation="Vertical" Margin="5">
+                                <DockPanel Margin="0,0,0,10" LastChildFill="True">
+                                    <Label Content="Car Name: " DockPanel.Dock="Left" VerticalAlignment="Center" Margin="0,0,5,0"></Label>
+                                    <TextBox HorizontalAlignment="Stretch" Text="{Binding viewModel.CarName}"></TextBox>
+                                </DockPanel>
+                            </StackPanel>
+                        
+
                         </GroupBox>
                     </Grid>
 

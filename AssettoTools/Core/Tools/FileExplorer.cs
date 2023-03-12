@@ -11,6 +11,8 @@ using IniParser;
 using IniParser.Model;
 using Microsoft.VisualBasic;
 using IniParser.Parser;
+using AssettoTools.ViewModels;
+using System.Collections.ObjectModel;
 
 namespace AssettoTools.Core.Tools
 {
@@ -26,16 +28,47 @@ namespace AssettoTools.Core.Tools
         private ACDWorker acdWorker = new();
         private IniDataParser iniParser = new();
 
-
-        public FileObject parseEntry(ACDEntry entry)
+        public int getFileIndex(string name)
         {
-            FileObject fileObject = new();
+            return MainWindowViewModel.Instance.FileItems.IndexOf(MainWindowViewModel.Instance.FileItems.Where(elem => elem.name == name).First());
+        }
 
-            fileObject.name = entry.name;
-            
-            fileObject.headerData = iniParser.Parse(entry.fileData);
+        public void reparseINIs()
+        {
+            foreach(FileObject file in MainWindowViewModel.Instance.FileItems)
+            {
+                if(file.fileType == FileTypes.INI)
+                {
+                    file.headerData = parseINI(file.fileData);
+                }
+            }
+        }
 
-            return fileObject;
+        public IniData parseINI(string fileData)
+        {
+            try
+            {
+                return iniParser.Parse(fileData);
+            }
+            catch (Exception ex)
+            {
+                Utilities.showMessageBox($"There was an error parsing file, Error message: {ex.Message}");
+
+                return null;
+            }
+        }
+
+        public void saveEntries(string filePath, List<FileObject> objects)
+        {
+            //Need to convert FileObject to ACDEntry list to save.
+            List<ACDEntry> converted = new();
+
+            foreach(FileObject file in objects)
+            {
+                converted.Add(new ACDEntry() { fileData = file.fileData, name = file.name });
+            }
+
+            acdWorker.saveEntries(filePath, converted);
         }
 
         public List<FileObject> getEntries(string filePath)
@@ -45,25 +78,46 @@ namespace AssettoTools.Core.Tools
             foreach (ACDEntry entry in acdWorker.getEntries(filePath))
             {
                 FileTypes type = parseType(entry.name);
-                
+
+                FileObject returnObject = new();
+
+                returnObject.name = entry.name;
+                returnObject.fileType = type;
+                returnObject.fileData = cleanFileData(entry.fileData);
+
+                //Logger.log($"{returnObject.name} | Cleaned: {returnObject.fileData}");
+
+                //Remove the // from the file, because it breaks the parsing.
+
                 if (type == FileTypes.INI)
                 {
                     //Parse INI
-                    FileObject parsed = parseEntry(entry);
-
-                    parsed.fileType = type;
-
-                    result.Add(parsed);
+                    returnObject.headerData = parseINI(returnObject.fileData);
                 }
-                else
-                {
-                    //Anything else just stuff into fileData.
 
-                    result.Add(new FileObject() { fileData = entry.fileData, fileType = type, name = entry.name });
-                }
+                result.Add(returnObject);
             }
 
             return result;
+        }
+
+        public string cleanFileData(string data)
+        {
+            string[] lines = data.Split('\n');
+
+            for (int i = 0; i < lines.Length; i++)
+            {
+                if (lines[i].Length > 0)
+                {
+                    if (lines[i].Trim()[0] == '/')
+                    {
+                        Logger.log($"Removing: {lines[i]}");
+                        lines[i] = "";
+                    }
+                }
+            }
+
+            return string.Join('\n', lines);
         }
 
         public FileTypes parseType(string name)
@@ -73,7 +127,7 @@ namespace AssettoTools.Core.Tools
 
             try
             {
-                returnType = (FileTypes)Enum.Parse(typeof(FileTypes), name.Trim().Split('.')[1]);
+                returnType = (FileTypes)Enum.Parse(typeof(FileTypes), name.Trim().Split('.')[1], true);
             }
             catch (Exception) { }
 
