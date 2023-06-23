@@ -9,15 +9,14 @@
 
 </br>
 
-Soon to be Assetto Corsa car modifier.
+Assetto Corsa car modifier.
 
-Will be able to modifiy all INI files from a desktop application.
+- Able to modifiy all INI files from a desktop application.
+- Comes with in-house ACD extractor and decryptor, custom wrote. Please see ACDBackend project.
+- Text editor is AvalonEdit, custom made syntax highlighting so it may not be perfect. Still working on it.
+- Work flow is fast, side menu containing all files enables quick and easy modification of all a cars attributes/settings, see image below.
 
-Comes with in-house ACD extractor and decryptor, custom wrote. Please see ACDBackend project.
-
-Text editor is AvalonEdit, custom made syntax highlighting so it may not be perfect. Still working on it.
-
-Release 0.1 is available in the release section of this repository.
+**Release 0.1 is available in the release section of this repository.**
 
 ## Pictures
 
