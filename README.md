@@ -1,4 +1,13 @@
-# AssettoTools
+<div align="center">
+     <img src="https://github.com/0danny/AssettoTools/assets/14921414/c563a89f-1532-4325-ab6a-f1bf9a6138b0" width="100" height="100">
+
+</div>
+
+<div align="center">
+     <h1>Assetto Tools</h1>
+</div>
+
+</br>
 
 Soon to be Assetto Corsa car modifier.
 
