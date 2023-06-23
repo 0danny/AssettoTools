@@ -6,18 +6,19 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
+using System.Xml.Linq;
 
 namespace ACDBackend
 {
+    /// Author: Danny
+    ///
+    /// Date: 25/02/2023
+    ///
+    /// <summary>
+    /// Reads the bytes within the array and keeps track of position.
+    /// </summary>
     public class CustomReader
     {
-        /// Author: Danny
-        ///
-        /// Date: 25/02/2023
-        ///
-        /// <summary>
-        /// Reads the bytes within the array and keeps track of position.
-        /// </summary>
 
         private byte[] data { get; set; }
 
@@ -33,13 +34,9 @@ namespace ACDBackend
 
             //They do this in content manager, not sure why, but I might aswell do it too lmao
             if (readInt() == -1111)
-            {
                 readInt();
-            }
             else
-            {
                 resetPosition();
-            }
         }
 
         public void readFile()
@@ -49,14 +46,20 @@ namespace ACDBackend
             Logger($"Read in {data.Length} bytes, with path: {filePath}");
         }
 
-        public List<ACDEntry> getEntries()
+        public List<FileObject> getEntries()
         {
-            List<ACDEntry> entryList = new();
+            List<FileObject> entryList = new();
 
             //Ensure we are not hitting EOF and still trying to read
-            while(position < data.Length)
+            while (position < data.Length)
             {
-                entryList.Add(new ACDEntry() { name = readString(), fileData = readEncryptedBytes() });
+                string entryName = readString();
+
+                entryList.Add(new FileObject() { 
+                    name = entryName, 
+                    fileData = readEncryptedBytes(),
+                    fileType = ACDWorker.parseType(entryName)
+                });
             }
 
             Logger($"EOF, returning: {entryList.Count} entries.");
@@ -78,17 +81,17 @@ namespace ACDBackend
         public void resetPosition()
         {
             Logger($"Resetting position: {position}");
-            
+
             position = 0;
         }
 
         public string readEncryptedBytes()
         {
-            Logger($"Current position: {position}");
+            //Logger($"Current position: {position}");
 
             int length = readInt();
 
-            Logger($"Size of entry: {length}");
+            //Logger($"Size of entry: {length}");
 
             byte[] _buffer = new byte[length];
 
@@ -139,14 +142,11 @@ namespace ACDBackend
             //Length of string
             int length = readInt();
 
-            Logger($"Length of string: {length}");
+            //Logger($"Length of string: {length}");
 
-            //Cast to string and return it
-            string returnString = Encoding.Default.GetString(readBytes(length));
+            //Logger($"Return string: {returnString}");
 
-            Logger($"Return string: {returnString}");
-
-            return returnString;
+            return Encoding.Default.GetString(readBytes(length));
         }
 
         public void skip(int amount)

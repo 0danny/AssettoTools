@@ -12,5 +12,6 @@ namespace AssettoTools.Core.Models
         public string folderName { get; set; }
         public string fullPath { get; set; }
         public string[] previewImages { get; set; }
+        public bool hasACD { get; set; }
     }
 }

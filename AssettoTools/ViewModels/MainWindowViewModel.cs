@@ -28,27 +28,6 @@ namespace AssettoTools.ViewModels
 
         public Controller controller { get; set; }
 
-        [ObservableProperty]
-        public int currentTab = 0;
-
-        partial void OnCurrentTabChanged(int value)
-        {
-            Logger.log($"Tab changed to {value}.");
-
-            //This needs to be done if I want to make a seperate editor and have it live update.
-            if(value == 0) //Editor Tab
-            {
-                //Editor tab.
-                CurrentFileObject = null;
-                setEditorContent("");
-            }
-            else if(value == 1) //Home Tab
-            {
-                //Re-parse the INI's.
-                setupHomeTab();
-            }
-        }
-
         /* Editor Tab */
         [ObservableProperty]
         public ObservableCollection<CarObject> carItems = new();
@@ -71,19 +50,18 @@ namespace AssettoTools.ViewModels
 
         partial void OnCurrentFileObjectChanging(FileObject value)
         {
-            if (value == null)
+            if(value != null)
             {
-                return;
+                if (CurrentFileObject != null && !string.IsNullOrEmpty(CurrentFileObject.name))
+                {
+                    Logger.log($"Saving the last ACD: {CurrentFileObject.name}");
+                    saveACDEntry(CurrentFileObject);
+                }
+
+                Logger.log($"ACD entry changed to: {value.name}.");
+
+                setEditorContent(value.fileData);
             }
-
-            if (CurrentFileObject != null && !string.IsNullOrEmpty(CurrentFileObject.name))
-            {
-                saveACDEntry(CurrentFileObject);
-            }
-
-            Logger.log($"ACD entry changed to: {value.name}.");
-
-            setEditorContent(value.getFileData());
         }
 
         partial void OnCurrentCarObjectChanged(CarObject value)
@@ -96,14 +74,14 @@ namespace AssettoTools.ViewModels
             //Clear file items
             FileItems.Clear();
 
-            List<FileObject> entries = controller.fileExplorer.getEntries(value.fullPath);
+            ObservableCollection<FileObject> entries = controller.fileExplorer.getEntries(value.fullPath);
 
             if (entries != null)
             {
                 //Ask the File Explorer to populate the INI list.
 
                 //Setup Editor Tab
-                FileItems = new ObservableCollection<FileObject>(entries);
+                FileItems = entries;
 
                 ImagePath = value.previewImages[0];
             }
@@ -117,16 +95,12 @@ namespace AssettoTools.ViewModels
 
         public void saveACDEntry(FileObject entry)
         {
-            int entryID = FileItems.IndexOf(entry);
+            if(entry == null || FileItems.Count <= 0)
+            {
+                return;
+            }
 
-            if(entryID != -1)
-            {
-                FileItems[entryID].fileData = getEditorContent();
-            }
-            else
-            {
-                Logger.log($"Could not save file: {entry.name}");
-            }
+            entry.fileData = getEditorContent();
         }
 
         //AvalonEdit does not have support for MVVM natively unfortunately due to its architecture. So I will need to modify and get text this way.
@@ -148,7 +122,7 @@ namespace AssettoTools.ViewModels
             //Save the current file if we haven't already.
             saveACDEntry(CurrentFileObject);
 
-            controller.fileExplorer.saveEntries(CurrentCarObject.fullPath, FileItems.ToList());
+            controller.fileExplorer.saveEntries(CurrentCarObject.fullPath, FileItems.ToList(), CurrentCarObject.hasACD);
 
             Utilities.showMessageBox("Successfully saved data.acd file.");
         }
@@ -177,37 +151,5 @@ namespace AssettoTools.ViewModels
 
         [ObservableProperty]
         public IHighlightingDefinition avalonDefinition = null;
-
-        /* Home Tab */
-
-        [ObservableProperty]
-        public string carName;
-
-        [ObservableProperty]
-        public ObservableCollection<ComboBoxItem> turboItems = new();
-
-        public void setupHomeTab()
-        {
-            //Reparse all INI's because they may have changed it in the code editor.
-
-            //Save last file
-            saveACDEntry(CurrentFileObject);
-
-            //Reparse
-            controller.fileExplorer.reparseINIs();
-
-            //Turbo Panel
-            TurboItems.Clear();
-
-
-
-            //Individual Panel
-            CarName = FileItems[controller.fileExplorer.getFileIndex("car.ini")].headerData["INFO"]["SCREEN_NAME"];
-        }
-
-        partial void OnCarNameChanged(string value)
-        {
-            FileItems[controller.fileExplorer.getFileIndex("car.ini")].headerData["INFO"]["SCREEN_NAME"] = CarName;
-        }
     }
 }

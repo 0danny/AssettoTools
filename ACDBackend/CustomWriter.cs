@@ -10,13 +10,13 @@ namespace ACDBackend
 {
     public class CustomWriter
     {
-        public void saveACD(string path, List<ACDEntry> entries)
+        public void saveACD(string path, List<FileObject> entries)
         {
             //Get size of entries array.
 
             using (MemoryStream stream = new MemoryStream())
             {
-                foreach (ACDEntry entry in entries)
+                foreach (FileObject entry in entries)
                 {
                     writeString(entry.name, stream); //Write the name of the file.
                     writeInt(entry.fileData.Length, stream); //Write the size of the file data.
@@ -37,11 +37,11 @@ namespace ACDBackend
             }
         }
 
-        public int getEntriesSize(List<ACDEntry> entries)
+        public int getEntriesSize(List<FileObject> entries)
         {
             int returnSize = 0;
 
-            foreach (ACDEntry entry in entries)
+            foreach (FileObject entry in entries)
             {
                 returnSize += entry.name.Length + entry.fileData.Length;
             }

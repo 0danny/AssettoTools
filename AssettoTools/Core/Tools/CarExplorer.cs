@@ -85,12 +85,15 @@ namespace AssettoTools.Core.Tools
 
             returnObject.fullPath = carFolder;
             returnObject.folderName = carFolder.Replace($"{carsPath}\\", "");
+            returnObject.hasACD = File.Exists($"{carFolder}\\data.acd");
 
             returnObject.previewImages = getImages(carFolder);
 
             string carName = getCarName(carFolder);
 
             returnObject.carName = carName == null ? returnObject.folderName : carName;
+
+            Logger.log($"[{returnObject.carName}] adding, hasACD: {returnObject.hasACD}.");
 
             return returnObject;
         }

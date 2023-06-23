@@ -18,31 +18,57 @@ namespace ACDBackend
 
         public string dataFolderPrefix { get; set; } = "\\data";
 
-        public void saveEntries(string filePath, List<ACDEntry> entries)
+        public void saveEntries(string filePath, List<FileObject> entries, bool hasACD)
         {
-            //Running this again for saveEntries just ensures that we have the write key.
-            setupEncryption(filePath);
-
-            if (entries == null)
+            if(hasACD)
             {
-                return;
-            }
+                //Running this again for saveEntries just ensures that we have the write key.
+                setupEncryption(filePath);
 
-            writer.saveACD($"{filePath}\\{dataPrefix}", entries);
+                if (entries == null)
+                {
+                    return;
+                }
+
+                writer.saveACD($"{filePath}\\{dataPrefix}", entries);
+            }
+            else
+            {
+                Logger("No ACD, writing directly to \\data.");
+
+                //If there is no ACD, just write the files directly to the \\data folder.
+                foreach(FileObject obj in entries)
+                {
+                    File.WriteAllText($"{filePath}\\{dataFolderPrefix}\\{obj.name}", obj.fileData);
+                    Logger($"Writing file: {obj.name}");
+                }
+            }
         }
 
-        public List<ACDEntry> getEntries(string filePath)
+
+        /// <summary>
+        /// Retrieves the entries from a specified file path.
+        /// </summary>
+        /// <param name="filePath">The path to the file or directory containing the ACD file or the data folder.</param>
+        /// <returns>
+        /// A tuple containing a list of ACDEntry objects and a boolean flag indicating how the entry data was collected.
+        /// </returns>
+        public List<FileObject> getEntries(string filePath)
         {
             //If the data folder already exists, just read the files from the folder.
             if(Directory.Exists($"{filePath}{dataFolderPrefix}"))
             {
                 Logger($"Data folder for: {filePath} already exists, reading...");
 
-                List<ACDEntry> entries = new();
+                List<FileObject> entries = new();
 
                 foreach (FileInfo file in new DirectoryInfo($"{filePath}{dataFolderPrefix}").GetFiles())
                 {
-                    entries.Add(new ACDEntry() { name = file.Name, fileData = File.ReadAllText(file.FullName)});
+                    entries.Add(new FileObject() { 
+                        name = file.Name, 
+                        fileData = File.ReadAllText(file.FullName),
+                        fileType = parseType(file.Name)
+                    });
                 }
 
                 return entries;
@@ -63,11 +89,27 @@ namespace ACDBackend
                 }
                 else
                 {
-                    Logger($"{filePath} contains no ACD or DATA folder, skipping...");
+                    Logger($"{filePath} contains no ACD or Data folder, skipping...");
 
                     return null;
                 }
             } 
+        }
+
+        public static FileTypes parseType(string name)
+        {
+            FileTypes returnType = FileTypes.OTHER;
+
+            try
+            {
+                //Get past the dot.
+                returnType = (FileTypes)Enum.Parse(typeof(FileTypes), name.Trim().Split('.')[1], true);
+            }
+            catch (Exception) { }
+
+            //If it shits itself, just return OTHER.
+
+            return returnType;
         }
 
         public void setupEncryption(string filePath)
@@ -93,9 +135,19 @@ namespace ACDBackend
         }
     }
 
-    public class ACDEntry
+    public class FileObject
     {
         public string name { get; set; }
+
+        public FileTypes fileType { get; set; }
+
         public string fileData { get; set; }
+    }
+
+    public enum FileTypes
+    {
+        INI,
+        LUT,
+        OTHER
     }
 }
