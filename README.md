@@ -17,21 +17,18 @@ Comes with in-house ACD extractor and decryptor, custom wrote. Please see ACDBac
 
 Text editor is AvalonEdit, custom made syntax highlighting so it may not be perfect. Still working on it.
 
-As of right now if you want to use, you will need to build it yourself.
+Release 0.1 is available in the release section of this repository.
 
 ## Pictures
 
-![image](https://user-images.githubusercontent.com/14921414/223351743-99046f84-5e5b-47a3-9d1d-e34d894ba87d.png)
+![image](https://github.com/0danny/AssettoTools/assets/14921414/c4c0a1bf-435e-4c33-a54a-772e1466166e)
 
 ## TODO
 
 - ~~Add a save button to re-encrypt ACD.~~
 - ~~Add an area to set your Assetto path (Settings tab?)~~
 - Dark/Light mode switch.
-- Fix saving for cars that don't have a ACD & just data folder.
-- Add a menu for less advanced users 
-     - Lets people edit simple things like turbo PSI, wastegate pressure etc.
-     - Good if they are unsure on how to edit the .INI files.
+- ~~Fix saving for cars that don't have a ACD & just data folder.~~
 - Add syntax highlighting for the .LUT files.
      - It is kind of broken with brackets (look at preview nodes)
 
