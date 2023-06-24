@@ -1,12 +1,14 @@
 ﻿using ACDBackend;
 using AssettoTools.Core;
 using AssettoTools.Core.Helper;
+using AssettoTools.Core.Interfaces;
 using AssettoTools.Core.Models;
-using AssettoTools.Core.Tools;
+using AssettoTools.Core.Services;
 using AssettoTools.Views.Windows;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using ICSharpCode.AvalonEdit.Highlighting;
+using ICSharpCode.AvalonEdit.Highlighting.Xshd;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -15,18 +17,19 @@ using System.Diagnostics;
 using System.Linq;
 using System.Runtime.Versioning;
 using System.Text;
+using System.Xml;
 using System.Threading.Tasks;
 using System.Windows.Controls;
 using System.Windows.Forms;
 
 namespace AssettoTools.ViewModels
 {
-    public partial class MainWindowViewModel : ObservableObject
+    public partial class MainViewModel : ObservableObject
     {
-        //I know this isn't ideal MVVM, but it's only a small project (I think ): )
-        public static MainWindowViewModel Instance { get; set; }
-
-        public Controller controller { get; set; }
+        /* Services */
+        public IConfigReader configService { get; set; }
+        public IFileExplorer fileService { get; set; }
+        public ICarExplorer carService { get; set; }
 
         /* Editor Tab */
         [ObservableProperty]
@@ -38,7 +41,6 @@ namespace AssettoTools.ViewModels
         [ObservableProperty]
         public string currentPath = "Current Path: ";
 
-        //Doing this manually, because the toolkit plays up
         [ObservableProperty]
         public CarObject currentCarObject = new();
 
@@ -47,6 +49,38 @@ namespace AssettoTools.ViewModels
 
         [ObservableProperty]
         public string imagePath = "";
+
+        public MainViewModel(IConfigReader _configService, IFileExplorer _fileService, ICarExplorer _carService)
+        {
+            configService = _configService;
+            fileService = _fileService;
+            carService = _carService;
+
+            initWindow();
+        }
+
+        public async void initWindow()
+        {
+            Logger.log("AssettoTools created.");
+
+            //Read the config into model.
+            configService.readConfig();
+
+            CarItems = await carService.populateList(configService.ConfigModel.ACDDirectory);
+
+            CurrentPath = configService.ConfigModel.ACDDirectory;
+
+            loadSyntaxHighlighting();
+        }
+
+        public void loadSyntaxHighlighting()
+        {
+            //Load syntax highlighting for avalonEdit.
+            using (XmlTextReader reader = new XmlTextReader("Resources\\INIDefinition.xshd"))
+            {
+                AvalonDefinition = HighlightingLoader.Load(reader, HighlightingManager.Instance);
+            }
+        }
 
         partial void OnCurrentFileObjectChanging(FileObject value)
         {
@@ -60,7 +94,7 @@ namespace AssettoTools.ViewModels
 
                 Logger.log($"ACD entry changed to: {value.name}.");
 
-                setEditorContent(value.fileData);
+                MainWindow.windowInstance.setEditorContent(value.fileData);
             }
         }
 
@@ -69,12 +103,12 @@ namespace AssettoTools.ViewModels
             Logger.log($"Car object changed to: {value.carName}");
 
             //Clear editor
-            setEditorContent("");
+            MainWindow.windowInstance.setEditorContent("");
 
             //Clear file items
             FileItems.Clear();
 
-            ObservableCollection<FileObject> entries = controller.fileExplorer.getEntries(value.fullPath);
+            ObservableCollection<FileObject> entries = fileService.getEntries(value.fullPath);
 
             if (entries != null)
             {
@@ -100,19 +134,10 @@ namespace AssettoTools.ViewModels
                 return;
             }
 
-            entry.fileData = getEditorContent();
+            entry.fileData = MainWindow.windowInstance.getEditorContent();
         }
 
-        //AvalonEdit does not have support for MVVM natively unfortunately due to its architecture. So I will need to modify and get text this way.
-        public string getEditorContent()
-        {
-            return MainWindow.mainWindow.avalonEditor.Text;
-        }
-
-        public void setEditorContent(string text)
-        {
-            MainWindow.mainWindow.avalonEditor.Text = text;
-        }
+        
 
         [RelayCommand]
         public void saveACD()
@@ -122,14 +147,14 @@ namespace AssettoTools.ViewModels
             //Save the current file if we haven't already.
             saveACDEntry(CurrentFileObject);
 
-            controller.fileExplorer.saveEntries(CurrentCarObject.fullPath, FileItems.ToList(), CurrentCarObject.hasACD);
+            fileService.saveEntries(CurrentCarObject.fullPath, FileItems.ToList(), CurrentCarObject.hasACD);
 
             Utilities.showMessageBox("Successfully saved data.acd file.");
         }
 
         public void OnWindowClosing(object sender, CancelEventArgs e)
         {
-            controller.configReader.saveConfig();
+            configService.saveConfig();
         }
 
         [RelayCommand]
@@ -143,9 +168,9 @@ namespace AssettoTools.ViewModels
 
                 CurrentPath = $"Current Path: {dialog.SelectedPath}";
 
-                controller.configReader.configModel.ACDDirectory = dialog.SelectedPath;
+                configService.ConfigModel.ACDDirectory = dialog.SelectedPath;
 
-                controller.carExplorer.populateList(dialog.SelectedPath);
+                carService.populateList(dialog.SelectedPath);
             }
         }
 

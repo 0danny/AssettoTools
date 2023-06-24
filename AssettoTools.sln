@@ -3,9 +3,14 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.4.33205.214
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ACDBackend", "ACDBackend\ACDBackend.csproj", "{EA3778F9-544D-410A-BF9D-A0830ADC8559}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ACDBackend", "ACDBackend\ACDBackend.csproj", "{EA3778F9-544D-410A-BF9D-A0830ADC8559}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AssettoTools", "AssettoTools\AssettoTools.csproj", "{30705971-E7AA-4F4A-9C9A-9A6BA57EC8E4}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AssettoTools", "AssettoTools\AssettoTools.csproj", "{30705971-E7AA-4F4A-9C9A-9A6BA57EC8E4}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{05FCA456-25F0-47FD-AC1E-A3D75518E32A}"
+	ProjectSection(SolutionItems) = preProject
+		.editorconfig = .editorconfig
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

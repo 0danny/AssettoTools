@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace AssettoTools.Core.Config
+namespace AssettoTools.Core.Services.Config
 {
-    public class Config
+    public class ConfigModel
     {
         public string ACDDirectory { get; set; }
     }

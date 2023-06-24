@@ -1,10 +1,12 @@
 ﻿using AssettoTools.Core.Helper;
+using AssettoTools.Core.Interfaces;
 using AssettoTools.Core.Models;
 using AssettoTools.ViewModels;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
@@ -13,9 +15,9 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace AssettoTools.Core.Tools
+namespace AssettoTools.Core.Services
 {
-    public class CarExplorer
+    public class CarExplorer : ICarExplorer
     {
         private readonly string carsPrefix = "\\content\\cars";
         private readonly string uiPrefix = "\\ui";
@@ -29,47 +31,42 @@ namespace AssettoTools.Core.Tools
             Logger.log("CarExplorer created.");
         }
 
-        public void populateList(string filePath)
+        public async Task<ObservableCollection<CarObject>> populateList(string filePath)
         {
-            if (string.IsNullOrEmpty(filePath))
+            return await Task.Run(() =>
             {
-                Logger.log("File path is empty, config not filled in?");
+                if (string.IsNullOrEmpty(filePath))
+                {
+                    Logger.log("File path is empty, config not filled in?");
 
-                Utilities.showMessageBox("Please set your Assetto Corsa path, located at the bottom portion of the window.");
+                    //Utilities.showMessageBox("Please set your Assetto Corsa path, located at the bottom portion of the window.");
+                    return null;
+                }
 
-                return;
-            }
+                carsPath = $"{filePath}{carsPrefix}";
 
-            carsPath = $"{filePath}{carsPrefix}";
+                if (!precautionChecks(carsPath))
+                {
+                    Logger.log("Precaution checks returned false, returning.");
+                    return null;
+                }
 
-            if (!precautionChecks(carsPath))
-            {
-                Logger.log("Precaution checks returned false, returning.");
-                return;
-            }
+                Logger.log($"Cars path is {carsPath}");
 
-            Logger.log($"Cars path is {carsPath}");
+                ObservableCollection<CarObject> carObjects = new();
 
-            //Create a temporary thread to not hold up the UI.
-            Thread carExplorerThread = new Thread(() =>
-            {
                 foreach (string carFolder in Directory.GetDirectories(carsPath))
                 {
                     CarObject carObject = parseFolder(carFolder);
 
-                    App.Current.Dispatcher.Invoke(delegate
+                    if (carObject != null)
                     {
-                        if (carObject != null)
-                        {
-                            MainWindowViewModel.Instance.CarItems.Add(carObject);
-                        }
-                    });
+                        carObjects.Add(carObject);
+                    }
                 }
-            });
 
-            carExplorerThread.Name = "Car Explorer Thread";
-            carExplorerThread.IsBackground = true;
-            carExplorerThread.Start();
+                return carObjects;
+            });
         }
 
         public CarObject parseFolder(string carFolder)
@@ -100,7 +97,7 @@ namespace AssettoTools.Core.Tools
 
         public string[] getImages(string carFolder)
         {
-            if(!Directory.Exists($"{carFolder}{skinsPrefix}"))
+            if (!Directory.Exists($"{carFolder}{skinsPrefix}"))
             {
                 Logger.log($"No skins for: {carFolder} returning...");
                 return null;

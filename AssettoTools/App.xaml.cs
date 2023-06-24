@@ -1,24 +1,46 @@
-﻿using Microsoft.Extensions.Configuration;
+﻿using AssettoTools.Core.Interfaces;
+using AssettoTools.Core.Services;
+using AssettoTools.Core.Services.Config;
+using AssettoTools.ViewModels;
+using AssettoTools.Views.Windows;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using System;
-using System.Collections.Generic;
-using System.Configuration;
-using System.Data;
-using System.IO;
-using System.Linq;
-using System.Reflection;
-using System.Threading.Tasks;
+using System.Diagnostics;
 using System.Windows;
-using System.Windows.Threading;
+using System.Windows.Forms.Design;
 
 namespace AssettoTools
 {
-    /// <summary>
-    /// Interaction logic for App.xaml
-    /// </summary>
     public partial class App : Application
     {
-   
+        public static IHost AppHost { get; private set; }
+
+        public App()
+        {
+            AppHost = Host.CreateDefaultBuilder()
+                .ConfigureServices((hostContext, services) =>
+                {
+                    services.AddSingleton<MainWindow>();
+
+                    services.AddSingleton<MainViewModel>();
+
+                    services.AddSingleton<IConfigReader, ConfigReader>();
+                    services.AddSingleton<IFileExplorer, FileExplorer>();
+                    services.AddSingleton<ICarExplorer, CarExplorer>();
+                })
+                .Build();
+        }
+
+        protected override async void OnStartup(StartupEventArgs e)
+        {
+            await AppHost!.StartAsync();
+            
+            var mainWindow = AppHost.Services.GetRequiredService<MainWindow>();
+
+            mainWindow.Show();
+
+            base.OnStartup(e);
+        }
     }
 }

@@ -1,15 +1,12 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <TargetFramework>net7.0-windows</TargetFramework>
+    <TargetFramework>net6.0-windows</TargetFramework>
     <OutputType>WinExe</OutputType>
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
     <UseWPF>true</UseWPF>
     <ImportWindowsDesktopTargets>true</ImportWindowsDesktopTargets>
     <ApplicationIcon>assetto-tools-icon.ico</ApplicationIcon>
   </PropertyGroup>
-  <ItemGroup>
-    <None Remove="Core\External\INIDefinition.xshd" />
-  </ItemGroup>
   <ItemGroup>
     <Content Include="assetto-tools-icon.ico" />
   </ItemGroup>
@@ -27,6 +24,7 @@
     </PackageReference>
     <PackageReference Include="MahApps.Metro.IconPacks" Version="4.11.0" />
     <PackageReference Include="Microsoft.CSharp" Version="4.7.0" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="7.0.0" />
     <PackageReference Include="Microsoft.Extensions.Hosting" Version="7.0.1" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.2" />
     <PackageReference Include="System.Data.DataSetExtensions" Version="4.5.0" />
@@ -36,13 +34,11 @@
     <PackageReference Include="Microsoft.Windows.Compatibility" Version="7.0.0" />
   </ItemGroup>
   <ItemGroup>
-    <Reference Include="System.Xml">
-      <HintPath>..\..\..\..\Downloads\System.Xml.dll</HintPath>
-    </Reference>
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="Core\External\INIDefinition.xshd">
+    <EmbeddedResource Include="Resources\INIDefinition.xshd">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\.editorconfig" Link=".editorconfig" />
   </ItemGroup>
 </Project>

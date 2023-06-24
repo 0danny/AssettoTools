@@ -10,17 +10,13 @@ using System.Threading.Tasks;
 using Microsoft.VisualBasic;
 using AssettoTools.ViewModels;
 using System.Collections.ObjectModel;
+using AssettoTools.Core.Interfaces;
 
-namespace AssettoTools.Core.Tools
+namespace AssettoTools.Core.Services
 {
-    public class FileExplorer
+    public class FileExplorer : IFileExplorer
     {
         private ACDWorker acdWorker = new();
-
-        public int getIndexOfItem(string name)
-        {
-            return MainWindowViewModel.Instance.FileItems.IndexOf(MainWindowViewModel.Instance.FileItems.FirstOrDefault(elem => elem.name == name));
-        }
 
         public void saveEntries(string filePath, List<FileObject> objects, bool hasACD)
         {

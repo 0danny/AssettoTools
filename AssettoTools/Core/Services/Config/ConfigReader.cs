@@ -1,4 +1,5 @@
 ﻿using AssettoTools.Core.Helper;
+using AssettoTools.Core.Interfaces;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -7,11 +8,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace AssettoTools.Core.Config
+namespace AssettoTools.Core.Services.Config
 {
-    public class ConfigReader
+    public class ConfigReader : IConfigReader
     {
-        public Config configModel = new();
+        private ConfigModel _configModel = new();
 
         private string configPath = "config.json";
 
@@ -20,19 +21,25 @@ namespace AssettoTools.Core.Config
             Logger.log("ConfigReader created.");
         }
 
+        public ConfigModel ConfigModel
+        {
+            get { return _configModel; }
+            private set { _configModel = value; }
+        }
+
         public void readConfig()
         {
             if (!File.Exists(configPath))
             {
                 Logger.log("Config does not exist, creating...");
 
-                File.WriteAllText(configPath, JsonConvert.SerializeObject(configModel));
+                File.WriteAllText(configPath, JsonConvert.SerializeObject(_configModel));
             }
             else
             {
                 try
                 {
-                    configModel = JsonConvert.DeserializeObject<Config>(File.ReadAllText(configPath));
+                    _configModel = JsonConvert.DeserializeObject<ConfigModel>(File.ReadAllText(configPath));
 
                     Logger.log("Config has successfully been read.");
                 }
@@ -47,7 +54,7 @@ namespace AssettoTools.Core.Config
         {
             try
             {
-                File.WriteAllText(configPath, JsonConvert.SerializeObject(configModel));
+                File.WriteAllText(configPath, JsonConvert.SerializeObject(_configModel));
 
                 Logger.log("Successfully saved config.");
             }

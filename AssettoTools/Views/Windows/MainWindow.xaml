@@ -4,6 +4,7 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:AssettoTools.Views.Windows"
+        xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
         d:DataContext="{d:DesignInstance local:MainWindow,IsDesignTimeCreatable=True}"
         mc:Ignorable="d"
         Title="Assetto Tools" Height="720" Width="1280"
@@ -43,13 +44,13 @@
                     <Border Grid.Row="0" Margin="20" Background="{DynamicResource {x:Static adonisUi:Brushes.Layer2BackgroundBrush}}" CornerRadius="20">
                         <Rectangle RadiusX="20" RadiusY="20" StrokeThickness="0">
                             <Rectangle.Fill>
-                                <ImageBrush ImageSource="{Binding viewModel.ImagePath}" Stretch="UniformToFill"/>
+                                <ImageBrush ImageSource="{Binding ImagePath}" Stretch="UniformToFill"/>
                             </Rectangle.Fill>
                         </Rectangle>
                     </Border>
 
                     <Border Grid.Row="1" Background="{DynamicResource {x:Static adonisUi:Brushes.Layer2BackgroundBrush}}" Margin="5" CornerRadius="10" Padding="10">
-                        <ListBox HorizontalAlignment="Stretch" VerticalAlignment="Stretch" SelectedItem="{Binding viewModel.CurrentCarObject}" ItemsSource="{Binding viewModel.CarItems}" >
+                        <ListBox HorizontalAlignment="Stretch" VerticalAlignment="Stretch" SelectedItem="{Binding CurrentCarObject}" ItemsSource="{Binding CarItems}" >
                             <ListBox.ItemTemplate>
                                 <DataTemplate>
                                     <TextBlock Text="{Binding carName}"/>
@@ -80,7 +81,7 @@
                         </Grid.ColumnDefinitions>
 
                         <GroupBox Grid.Column="1" Header="Car Files">
-                            <ListBox HorizontalAlignment="Stretch" VerticalAlignment="Stretch" SelectedItem="{Binding viewModel.CurrentFileObject}" ItemsSource="{Binding viewModel.FileItems}">
+                            <ListBox HorizontalAlignment="Stretch" VerticalAlignment="Stretch" SelectedItem="{Binding CurrentFileObject}" ItemsSource="{Binding FileItems}">
                                 <ListBox.ItemTemplate>
                                     <DataTemplate>
                                         <TextBlock Text="{Binding name}"/>
@@ -94,7 +95,7 @@
                         <avalonEdit:TextEditor
                         x:Name="avalonEditor"
                         Grid.Column="0"
-                        SyntaxHighlighting="{Binding viewModel.AvalonDefinition}"
+                        SyntaxHighlighting="{Binding AvalonDefinition}"
                         FontFamily="Consolas"
                         FontSize="10pt"
                         Foreground="White"
@@ -113,11 +114,11 @@
 
         <StackPanel Orientation="Horizontal" VerticalAlignment="Stretch" Grid.Row="1" Margin="5">
 
-            <Button Content="Save ACD" Command="{Binding viewModel.saveACDCommand}" Margin="5"></Button>
+            <Button Content="Save ACD" Command="{Binding saveACDCommand}" Margin="5"></Button>
 
             <StackPanel Orientation="Horizontal">
-                <Button Content="Set Assetto Path" Margin="5" Command="{Binding viewModel.setAssettoPathCommand}"></Button>
-                <Label Content="{Binding viewModel.CurrentPath}" VerticalAlignment="Center" Margin="5"></Label>
+                <Button Content="Set Assetto Path" Margin="5" Command="{Binding setAssettoPathCommand}"></Button>
+                <Label Content="{Binding CurrentPath}" VerticalAlignment="Center" Margin="5"></Label>
             </StackPanel>
 
         </StackPanel>
