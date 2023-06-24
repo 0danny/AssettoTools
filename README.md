@@ -15,6 +15,7 @@ Assetto Corsa car modifier.
 - Comes with in-house ACD extractor and decryptor, custom wrote. Please see ACDBackend project.
 - Text editor is AvalonEdit, custom made syntax highlighting so it may not be perfect. Still working on it.
 - Work flow is fast, side menu containing all files enables quick and easy modification of all a cars attributes/settings, see image below.
+- Changes are auto-saved between files. However, when you go to a different car, the changes for the previous are lost unless you save the ACD/data.
 
 **Release 0.1 is available in the release section of this repository.**
 
