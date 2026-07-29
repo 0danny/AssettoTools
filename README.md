@@ -11,6 +11,8 @@
 
 Assetto Corsa car modifier.
 
+### ! THS PROJECT IS NO LONGER BEING WORKED ON !
+
 - Able to modifiy all INI files from a desktop application.
 - Comes with in-house ACD extractor and decryptor, custom wrote. Please see ACDBackend project.
 - Text editor is AvalonEdit, custom made syntax highlighting so it may not be perfect. Still working on it.
